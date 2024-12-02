@@ -1,0 +1,167 @@
+---
+title: "Final Project"
+author: "Jieyuan YAN and Puwen WEN"
+format: html
+editor: visual
+---
+
+## Link to our github project
+
+In order to access our github repository, please use the link below:
+
+https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13.git
+
+## Data Source
+
+Data Sources:
+
+All datasets are publicly available from Eurostat, without extra registration.
+
+Website: https://ec.europa.eu/eurostat/web/main/data/database
+
+Below are the datasets selected for this study, along with a description of their contents.
+
+### urb_cpopcb:
+
+Title: Population by citizenship and country of birth - cities and greater cities.
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/urb_cpopcb/default/table?lang=en&category=mi.mii.mii_urb
+
+Description: Contains population data classified by citizenship and country of birth for urban and metropolitan areas, enabling demographic and migration trend analyses.
+
+### ilc_di15:
+
+Title: Mean and median income by group of citizenship (population aged 18 and over).
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di15/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Description: Provides data on mean and median income categorized by citizenship groups for individuals aged 18 and above, allowing for a comparison of income levels across native-born, EU-born, and non-EU-born populations.
+
+### ilc_di16:
+
+Title: Mean and median income by group of country of birth (population aged 18 and over).
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Description: Similar to ilc_di15 but focuses on grouping by country of birth, highlighting income disparities among native-born and foreign-born populations.
+
+### ilc_li31:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_li31/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Title: At-risk-of-poverty rate by group of citizenship (population aged 18 and over).
+
+Description: Measures the proportion of the population at risk of poverty, segmented by citizenship.
+
+### ilc_iw15:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw15/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Title: In-work at-risk-of-poverty rate by group of citizenship (population aged 18 and over).
+Description: Captures poverty rates among employed individuals, broken down by citizenship groups.
+
+### ilc_peps05n:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_peps05n/default/table?lang=en&category=mi.mii.mii_soinc.mii_pe
+
+Title: Persons at risk of poverty or social exclusion by group of citizenship (population aged 18 and over).
+
+Description: Combines data on poverty and social exclusion indicators categorized by citizenship.
+
+### ilc_peps06n:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_peps06/default/table?lang=en&category=mi.mii.mii_soinc.mii_pe
+
+Title: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over).
+
+Description: Similar to ilc_peps05n but categorized by country of birth.
+
+### ilc_li33:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_li33/default/table?lang=en&category=mi.mii.mii_soinc.mii_pe
+
+Title: At-risk-of-poverty rate for children by citizenship of their parents (population aged 0 to 17 years).
+
+Description: Provides poverty data specific to children, based on the citizenship of their parents.
+
+### ilc_lvps16:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_lvps16/default/table?lang=en&category=mi.mii.mii_soinc.mii_lc
+
+Title: Distribution of population by group of country of birth and tenure status (population aged 18 and over).
+
+Description: Reports housing tenure types (e.g., owned or rented) across groups defined by country of birth.
+
+### edat_lfs_9912:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata
+
+Title: Population by educational attainment level, sex, age, and country of birth (%).
+
+Description: Shows educational attainment levels across demographic and migration status categories.
+
+### lfsa_pgaccpm:
+
+Link: https://ec.europa.eu/eurostat/databrowser/product/view/lfsa_pgaccpm?category=mi.mii.mii_emp
+
+Title: Population by sex, age, migration status, country of birth, and country of birth of parents.
+
+Description: Provides detailed demographic data on migration status, birth origin, and parental background.
+
+### lfsa_pfgacedm:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfsa_pfgacedm/default/table?lang=en&category=mi.mii.mii_emp
+
+Title: Foreign-born population by sex, age, main reason for migrating, country of birth, and educational attainment level.
+
+Description: Offers insights into migration reasons and education levels among foreign-born individuals.
+
+### lfsa_urganedm:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfsa_urganedm/default/table?lang=en&category=mi.mii.mii_emp.mii_une
+
+Title: Unemployment rates by sex, age, migration status, citizenship, and educational attainment level.
+
+Description: Provides unemployment data across various demographic and migration categories.
+
+### migr_acqs:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/migr_acqs/default/table?lang=en&category=mi.mii.mii_actctz
+
+Title: Residents who acquired citizenship as a share of resident non-citizens by former citizenship and sex.
+
+Description: Tracks naturalization rates among non-citizens.
+
+### migr_resshare:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/migr_resshare/default/table?lang=en&category=mi.mii.mii_actctz
+
+Title: Long-term residents among all non-EU citizens holding residence permits by citizenship on 31 December (%).
+
+Description: Reflects the proportion of long-term residents among non-EU nationals.
+
+### lfst_rimgpcga:
+
+Link: https://ec.europa.eu/eurostat/databrowser/product/view/lfst_rimgpcga?category=mi.mii.mii_lfst
+
+Title: Recent immigrants by sex, age, and country of birth.
+
+Description: Details recent immigration patterns by demographic attributes.
+
+### lfst_rimgecga:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_rimgecga/default/table?lang=en&category=mi.mii.mii_lfst
+
+Title: Employed recent immigrants by sex, age, and country of birth.
+
+Description: Focuses on employment rates among recently immigrated populations.
+
+### migr_eipre:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/migr_eipre$dv_1221/default/table?lang=en&category=mi.mci.mci_eil
+
+Title: Third country nationals found to be illegally present - annual data (rounded).
+
+Description: Reports on unauthorized third-country nationals.
+
+
