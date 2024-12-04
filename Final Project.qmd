@@ -57,8 +57,13 @@ Description: Measures the proportion of the population at risk of poverty, segme
 
 Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw15/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
 
-Title: In-work at-risk-of-poverty rate by group of citizenship (population aged 18 and over).
-Description: Captures poverty rates among employed individuals, broken down by citizenship groups.
+Title: In-work at-risk-of-poverty rate by group of citizenship (population aged 18 and over). Description: Captures poverty rates among employed individuals, broken down by citizenship groups.
+
+### ilc_iw16:
+
+Link: <https://ec.europa.eu/eurostat/databrowser/view/ilc_iw16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip>
+
+Title: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over). Description: Captures poverty rates among employed individuals, broken down by citizenship groups.
 
 ### ilc_peps05n:
 
@@ -158,10 +163,74 @@ Description: Focuses on employment rates among recently immigrated populations.
 
 ### migr_eipre:
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/migr_eipre$dv_1221/default/table?lang=en&category=mi.mci.mci_eil
+Link: https://ec.europa.eu/eurostat/databrowser/view/migr_eipre\$dv_1221/default/table?lang=en&category=mi.mci.mci_eil
 
 Title: Third country nationals found to be illegally present - annual data (rounded).
 
 Description: Reports on unauthorized third-country nationals.
 
+### immigration:
 
+code: tps00176
+
+<https://ec.europa.eu/eurostat/databrowser/view/tps00176/default/table?lang=en&category=t_migr.t_migr_cit.t_migr_immi>
+
+### emmigration:
+
+code:tps00177
+
+<https://ec.europa.eu/eurostat/databrowser/view/tps00177/default/table?lang=en&category=t_migr.t_migr_cit.t_migr_emi>
+
+### Acquisition of citizenship:
+
+code: tps00024
+
+<https://ec.europa.eu/eurostat/databrowser/view/tps00024/default/table?lang=en&category=t_migr.t_migr_cit.t_migr_acqn>
+
+### **First permits by reason**
+
+code: tps00170
+
+<https://ec.europa.eu/eurostat/databrowser/view/tps00170/default/table?lang=en&category=t_migr.t_migr_man>
+
+### **All valid permits by reason on 31 December of each year**
+
+code: tps00171
+
+<https://ec.europa.eu/eurostat/databrowser/view/tps00171/default/table?lang=en&category=t_migr.t_migr_man>
+
+### **Unemployment rates by sex, age, country of birth and degree of urbanisation**
+
+lfst_r_lfur2gacu
+
+<https://ec.europa.eu/eurostat/databrowser/view/lfst_r_lfu2gacu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_une_r>
+
+### **Employment rates by sex, age and country of birth**
+
+lfsq_ergacob
+
+<https://ec.europa.eu/eurostat/databrowser/view/lfsq_ergacob/default/table?lang=en&category=mi.mii.mii_emp_q.mii_lfsq_emp>
+
+### **Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation**
+
+lfst_r_eredcobu
+
+<https://ec.europa.eu/eurostat/databrowser/view/lfst_r_eredcobu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_em_r>
+
+### **Third country nationals found to be illegally present**
+
+migr_eipre
+
+<https://ec.europa.eu/eurostat/databrowser/view/migr_eipre$dv_1221/default/table?lang=en&category=mi.mci.mci_eil>
+
+### **Immigration by age, sex and group of country of birth**
+
+migr_imm4ctb
+
+<https://ec.europa.eu/eurostat/databrowser/view/migr_imm4ctb/default/table?lang=en&category=migr.migr_cit.migr_immi>
+
+### **Emigration by age group, sex and country of birth**
+
+migr_emi4ctb
+
+<https://ec.europa.eu/eurostat/databrowser/view/migr_emi4ctb/default/table?lang=en&category=migr.migr_cit.migr_emi>
