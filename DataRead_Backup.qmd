@@ -1,0 +1,154 @@
+---
+title: "Data Processing"
+author: "Jieyuan Yan, Puwen Wen"
+format: html
+---
+
+## Prepare environment
+```{r}
+library(here)
+library(vroom)
+library(tidyr)
+library(dplyr)
+```
+
+## Read Dataset
+```{r}
+urb_cpopcb = vroom('dataset//estat_urb_cpopcb.tsv',delim = "\t",show_col_types = FALSE)
+ilc_di16 = vroom('dataset//estat_ilc_di16.tsv',delim = "\t",show_col_types = FALSE)
+ilc_iw16 = vroom('dataset//estat_ilc_iw16.tsv',show_col_types = FALSE)
+ilc_peps06 = vroom('dataset//estat_ilc_peps06.tsv',show_col_types = FALSE)
+ilc_lvps16 = vroom('dataset//estat_ilc_lvps16.tsv',show_col_types = FALSE)
+edat_lfs_9912 = vroom('dataset//estat_edat_lfs_9912.tsv',show_col_types = FALSE)
+lfsa_pfgacedm = vroom('dataset//estat_lfsa_pfgacedm.tsv',show_col_types = FALSE)
+lfst_r_lfur2gacu = vroom('dataset//estat_lfst_r_lfur2gacu.tsv',show_col_types = FALSE)
+lfst_r_eredcobu = vroom('dataset//estat_lfst_r_eredcobu.tsv',show_col_types = FALSE)
+```
+
+## Deal with Dataset
+
+urb_cpopcb: Population by citizenship and country of birth - cities and greater cities
+```{r}
+
+urb_cpopcb = urb_cpopcb |> separate(`freq,indic_ur,cities\\TIME_PERIOD`, 
+                            into = c("freq", "indic_ur", "cities"), 
+                       sep = ",")
+urb_cpopcb = urb_cpopcb|>
+  pivot_longer(cols = `1990`:`2024`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+
+```
+
+ilc_di16: Mean and median income by group of country of birth (population aged 18 and over)
+```{r}
+
+ilc_di16 = ilc_di16 |> separate(`freq,unit,indic_il,c_birth,sex,age,geo\\TIME_PERIOD`, 
+        into = c("freq", "unit", "indic_il","c_birth","sex","age","geo"), 
+        sep = ",")
+ilc_di16 = ilc_di16|>
+  pivot_longer(cols = `2003`:`2023`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+```
+
+
+ilc_iw16: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over)
+```{r}
+
+ilc_iw16 = ilc_iw16 |> separate(`freq,unit,c_birth,sex,age,geo\\TIME_PERIOD`, 
+        into = c("freq", "unit","c_birth","sex","age","geo"), 
+        sep = ",")
+ilc_iw16 = ilc_iw16|>
+  pivot_longer(cols = `2003`:`2023`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+```
+
+
+ilc_peps06: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over)
+```{r}
+# Persons at risk of poverty or social exclusion
+# unit: percentage
+
+ilc_peps06 = ilc_peps06 |> separate(`freq,c_birth,sex,age,unit,geo\\TIME_PERIOD`, 
+        into = c("freq", "unit","c_birth","sex","age","geo"), 
+        sep = ",")
+ilc_peps06 = ilc_peps06|>
+  pivot_longer(cols = `2003`:`2020`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+```
+
+
+ilc_lvps16: Distribution of population by group of country of birth and tenure status (population aged 18 and over)
+```{r}
+# Distribution of population by group of country of birth and tenure status
+ilc_lvps16 = ilc_lvps16 |> separate(`freq,unit,tenure,c_birth,sex,age,geo\\TIME_PERIOD`, 
+        into = c("freq","unit","tenure","c_birth","sex","age","geo"), 
+        sep = ",")
+ilc_lvps16 = ilc_lvps16|>
+  pivot_longer(cols = `2003`:`2023`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+
+```
+
+
+edat_lfs_9912: Population by educational attainment level, sex, age and country of birth
+```{r}
+
+edat_lfs_9912 = edat_lfs_9912 |> separate(`freq,unit,sex,isced11,c_birth,age,geo\\TIME_PERIOD`, 
+        into = c("freq","unit","sex","isced11","c_birth","age","geo"), 
+        sep = ",")
+edat_lfs_9912 = edat_lfs_9912|>
+  pivot_longer(cols = `2004`:`2023`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+```
+
+
+lfst_r_lfur2gacu: Unemployment rates by sex, age, country of birth and degree of urbanisation
+```{r}
+
+lfst_r_lfur2gacu = lfst_r_lfur2gacu |> separate(`freq,unit,deg_urb,c_birth,sex,age,geo\\TIME_PERIOD`, 
+        into = c("freq","unit","deg_urb","c_birth","sex","age","geo"), 
+        sep = ",")
+lfst_r_lfur2gacu = lfst_r_lfur2gacu|>
+  pivot_longer(cols = `1995`:`2023`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+```
+
+
+lfst_r_eredcobu: Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation
+```{r}
+
+lfst_r_eredcobu = lfst_r_eredcobu |> separate(`freq,deg_urb,c_birth,isced11,age,sex,unit,geo\\TIME_PERIOD`, 
+        into = c("freq","deg_urb","c_birth","isced11","age","sex","unit","geo"), 
+        sep = ",")
+lfst_r_eredcobu = lfst_r_eredcobu|>
+  pivot_longer(cols = `1995`:`2023`,
+    names_to = "TIME_PERIOD",
+    names_transform = as.integer,
+    values_to = "values"
+  )
+```
+
+
+
+
