@@ -26,5 +26,59 @@ lfst_r_lfur2gacu <-  get_eurostat('lfst_r_lfur2gacu',time_format = "num",stringA
 lfst_r_eredcobu <-  get_eurostat('lfst_r_eredcobu',time_format = "num",stringAsFactors = TRUE)
 ```
 
+<<<<<<< HEAD
+=======
+## Describe the data
+
+`urb_cpopcb` is xxx, it has `r NROW(urb_cpopcb)` rows, `r NCOL(urb_cpopcb)` columns.
+
+`ilc_di16` is xxx, it has `r NROW(ilc_di16)` rows, `r NCOL(ilc_di16)` columns.
+
+`ilc_iw16` is xxx, it has `r NROW(ilc_iw16)` rows, `r NCOL(ilc_iw16)` columns.
+
+`ilc_peps06` is xxx, it has `r NROW(ilc_peps06)` rows, `r NCOL(ilc_peps06)` columns.
+
+`ilc_lvps16` is xxx, it has `r NROW(ilc_lvps16)` rows, `r NCOL(ilc_lvps16)` columns.
+
+`edat_lfs_9912` is xxx, it has `r NROW(edat_lfs_9912)` rows, `r NCOL(edat_lfs_9912)` columns.
+
+`lfsa_pfgacedm` is xxx, it has `r NROW(lfsa_pfgacedm)` rows, `r NCOL(lfsa_pfgacedm)` columns.
+
+`lfst_r_lfur2gacu` is xxx, it has `r NROW(lfst_r_lfur2gacu)` rows, `r NCOL(lfst_r_lfur2gacu)` columns.
+
+`lfst_r_eredcobu` is xxx, it has `r NROW(lfst_r_eredcobu)` rows, `r NCOL(lfst_r_eredcobu)` columns.
+
+## Research Question
+
+What decides the income level of 
+
+## Introduce the variable
+
+we introduce our variables in this part.
+
+
+
+sex, age, country of birth, education level, income, (un)employment rate, 
+
+## Clean the data
+
+we clean our data set in this part.
+
+`urb_cpopcb` is table of city-level population data by citizenship and country of birth, and we need to use `filter` method to extract our dataset.
+for the indic_ur(urban audit indicator), we choose `DE2002I` (EU foreigners as a proportion of population), `DE2003I` (Non-EU foreigners as a proportion of population) and `DE2007I` Foreigners as a proportion of population`.
+
+```{r}
+urb_cpopcb|>filter(cities=='AT' & indic_ur=='DE2008I')
+```
+```{r}
+urb_cpopcb|>filter(cities=='AT' & indic_ur=='DE2003I')
+```
+
+>>>>>>> e750cd88168600f6974a52b42b871f162b485d61
+
+
+## Join the data
+
+##
 
 
