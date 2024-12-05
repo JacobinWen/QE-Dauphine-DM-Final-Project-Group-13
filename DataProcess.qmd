@@ -26,89 +26,56 @@ lfst_r_lfur2gacu <-  get_eurostat('lfst_r_lfur2gacu',time_format = "num",stringA
 lfst_r_eredcobu <-  get_eurostat('lfst_r_eredcobu',time_format = "num",stringAsFactors = TRUE)
 ```
 
-## Deal with Dataset
+## Describe the data
 
-urb_cpopcb: Population by citizenship and country of birth - cities and greater cities
+`urb_cpopcb` is xxx, it has `r NROW(urb_cpopcb)` rows, `r NCOL(urb_cpopcb)` columns.
+
+`ilc_di16` is xxx, it has `r NROW(ilc_di16)` rows, `r NCOL(ilc_di16)` columns.
+
+`ilc_iw16` is xxx, it has `r NROW(ilc_iw16)` rows, `r NCOL(ilc_iw16)` columns.
+
+`ilc_peps06` is xxx, it has `r NROW(ilc_peps06)` rows, `r NCOL(ilc_peps06)` columns.
+
+`ilc_lvps16` is xxx, it has `r NROW(ilc_lvps16)` rows, `r NCOL(ilc_lvps16)` columns.
+
+`edat_lfs_9912` is xxx, it has `r NROW(edat_lfs_9912)` rows, `r NCOL(edat_lfs_9912)` columns.
+
+`lfsa_pfgacedm` is xxx, it has `r NROW(lfsa_pfgacedm)` rows, `r NCOL(lfsa_pfgacedm)` columns.
+
+`lfst_r_lfur2gacu` is xxx, it has `r NROW(lfst_r_lfur2gacu)` rows, `r NCOL(lfst_r_lfur2gacu)` columns.
+
+`lfst_r_eredcobu` is xxx, it has `r NROW(lfst_r_eredcobu)` rows, `r NCOL(lfst_r_eredcobu)` columns.
+
+## Research Question
+
+What decides the income level of 
+
+## Introduce the variable
+
+we introduce our variables in this part.
+
+
+
+sex, age, country of birth, education level, income, (un)employment rate, 
+
+## Clean the data
+
+we clean our data set in this part.
+
+`urb_cpopcb` is table of city-level population data by citizenship and country of birth, and we need to use `filter` method to extract our dataset.
+for the indic_ur(urban audit indicator), we choose `DE2002I` (EU foreigners as a proportion of population), `DE2003I` (Non-EU foreigners as a proportion of population) and `DE2007I` Foreigners as a proportion of population`.
+
 ```{r}
-
-urb_cpopcb = urb_cpopcb |> separate(`freq,indic_ur,cities\\TIME_PERIOD`, 
-                            into = c("freq", "indic_ur", "cities"), 
-                       sep = ",")
-colnames(urb_cpopcb)
-
+urb_cpopcb|>filter(cities=='AT' & indic_ur=='DE2008I')
 ```
-
-ilc_di16: Mean and median income by group of country of birth (population aged 18 and over)
 ```{r}
-
-ilc_di16 = ilc_di16 |> separate(`freq,unit,indic_il,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq", "unit", "indic_il","c_birth","sex","age","geo"), 
-        sep = ",")
-colnames(ilc_di16)
-```
-
-
-ilc_iw16: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over)
-```{r}
-
-ilc_iw16 = ilc_iw16 |> separate(`freq,unit,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq", "unit","c_birth","sex","age","geo"), 
-        sep = ",")
-colnames(ilc_iw16)
-```
-
-
-ilc_peps06: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over)
-```{r}
-# Persons at risk of poverty or social exclusion
-# unit: percentage
-
-ilc_peps06 = ilc_peps06 |> separate(`freq,c_birth,sex,age,unit,geo\\TIME_PERIOD`, 
-        into = c("freq", "unit","c_birth","sex","age","geo"), 
-        sep = ",")
-colnames(ilc_peps06)
-```
-
-
-ilc_lvps16: Distribution of population by group of country of birth and tenure status (population aged 18 and over)
-```{r}
-# Distribution of population by group of country of birth and tenure status
-ilc_lvps16 = ilc_lvps16 |> separate(`freq,unit,tenure,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq","unit","tenure","c_birth","sex","age","geo"), 
-        sep = ",")
-colnames(ilc_lvps16)
-
+urb_cpopcb|>filter(cities=='AT' & indic_ur=='DE2003I')
 ```
 
 
-edat_lfs_9912: Population by educational attainment level, sex, age and country of birth
-```{r}
 
-edat_lfs_9912 = edat_lfs_9912 |> separate(`freq,unit,sex,isced11,c_birth,age,geo\\TIME_PERIOD`, 
-        into = c("freq","unit","sex","isced11","c_birth","age","geo"), 
-        sep = ",")
-colnames(edat_lfs_9912)
-```
+## Join the data
 
-
-lfst_r_lfur2gacu: Unemployment rates by sex, age, country of birth and degree of urbanisation
-```{r}
-
-lfst_r_lfur2gacu = lfst_r_lfur2gacu |> separate(`freq,unit,deg_urb,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq","unit","deg_urb","c_birth","sex","age","geo"), 
-        sep = ",")
-colnames(lfst_r_lfur2gacu)
-```
-
-
-lfst_r_eredcobu: Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation
-```{r}
-
-lfst_r_eredcobu = lfst_r_eredcobu |> separate(`freq,deg_urb,c_birth,isced11,age,sex,unit,geo\\TIME_PERIOD`, 
-        into = c("freq","deg_urb","c_birth","isced11","age","sex","unit","geo"), 
-        sep = ",")
-colnames(lfst_r_eredcobu)
-```
-
+##
 
 
