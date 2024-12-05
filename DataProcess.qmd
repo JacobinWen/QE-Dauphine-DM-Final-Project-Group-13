@@ -4,7 +4,7 @@ author: "Jieyuan Yan, Puwen Wen"
 format: html
 ---
 
-
+## Prepare environment
 ```{r}
 library(here)
 library(vroom)
@@ -12,6 +12,7 @@ library(tidyr)
 library(dplyr)
 ```
 
+## Read Dataset
 ```{r}
 urb_cpopcb = vroom('dataset//estat_urb_cpopcb.tsv',delim = "\t",show_col_types = FALSE)
 ilc_di16 = vroom('dataset//estat_ilc_di16.tsv',delim = "\t",show_col_types = FALSE)
@@ -22,159 +23,91 @@ edat_lfs_9912 = vroom('dataset//estat_edat_lfs_9912.tsv',show_col_types = FALSE)
 lfsa_pfgacedm = vroom('dataset//estat_lfsa_pfgacedm.tsv',show_col_types = FALSE)
 lfst_r_lfur2gacu = vroom('dataset//estat_lfst_r_lfur2gacu.tsv',show_col_types = FALSE)
 lfst_r_eredcobu = vroom('dataset//estat_lfst_r_eredcobu.tsv',show_col_types = FALSE)
-migr_imm4ctb = vroom('dataset//estat_migr_imm4ctb.tsv',show_col_types = FALSE)
-migr_emi4ctb = vroom('dataset//estat_migr_emi4ctb.tsv',show_col_types = FALSE)
 ```
 
+## Deal with Dataset
 
+urb_cpopcb: Population by citizenship and country of birth - cities and greater cities
 ```{r}
-
-# freq: time frequency, Annual
-
-# indic_ur: urban audit indicator
-# [DE4001V]Population with the place of residence in the same dwelling, in the year before
-# [DE4002V]Population with the place of residence in another dwelling in the same city/FUA, in the year before
-# [DE4003V]Population with the place of residence in another dwelling outside the current city/FUA in the same country, in the year before
-# [DE4004V]Population with the place of residence in another EU country, in the year before
-# [DE4005V]Population with the place of residence outside the EU, in the year before
-# [DE2001V]Nationals
-# [DE2002V]EU foreigners
-# [DE2003V]Non-EU foreigners
-# [DE2008V]Native-born
-# [DE2009V]Foreign-born
-# [DE2010V]Foreign-born in a EU country
-# [DE2011V]Foreign-born in a non-EU country
-# [DE2012V]Foreigners
-# [DE2001I]Nationals as a proportion of population
-# [DE2007I]Foreigners as a proportion of population
-# [DE2008I]Native-born as a proportion of population
-# [DE2009I]Foreign-born as a proportion of population
-# [DE2002I]EU foreigners as a proportion of population
-# [DE2003I]Non-EU foreigners as a proportion of population
-
-# cities
 
 urb_cpopcb = urb_cpopcb |> separate(`freq,indic_ur,cities\\TIME_PERIOD`, 
-                            into = c("freq", "indic_ur", "cities", "\\TIME_PERIOD"), 
-                       sep = ",") |> select(!`\\TIME_PERIOD`)
+                            into = c("freq", "indic_ur", "cities"), 
+                       sep = ",")
+colnames(urb_cpopcb)
 
 ```
 
-
+ilc_di16: Mean and median income by group of country of birth (population aged 18 and over)
 ```{r}
-
-# unit: Unit of measure, [EUR]-Euro, [NAC]-National currency, [PPS]-Purchasing power standard (PPS)
-# c_birth: Country of Birth
-#   [NEU27_2007_FOR] - Non-EU27 countries (2007-2013) nor reporting country
-#   [FOR] - Foreign country
-#   [NAT] - Reporting country
-# sex: T-total, M-males, F-females
-# age: [Y18-54] - From 18 to 54 years, [Y18-59]-From 18 to 59 years
-#      [Y18-64] - From 18 to 64 years, [Y_GE18]-18 years or over
-#      [Y20-64] - From 20 to 64 years, [Y25-54]-From 25 to 54 years
-#      [Y25-59] - From 25 to 59 years, [Y55-64]-From 55 to 64 years
-#      [Y_GE55] - 55 years or over, [Y_GE60]-60 years or over
-#      [Y_GE65] - 65 years or over
-# geo: Geopolitical Entity
-
 
 ilc_di16 = ilc_di16 |> separate(`freq,unit,indic_il,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq", "unit", "indic_il","c_birth","sex","age","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
+        into = c("freq", "unit", "indic_il","c_birth","sex","age","geo"), 
+        sep = ",")
+colnames(ilc_di16)
 ```
 
 
+ilc_iw16: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over)
 ```{r}
-# In-work at-risk-of-poverty rate
-# unit: percentage
 
 ilc_iw16 = ilc_iw16 |> separate(`freq,unit,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq", "unit","c_birth","sex","age","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
-
+        into = c("freq", "unit","c_birth","sex","age","geo"), 
+        sep = ",")
+colnames(ilc_iw16)
 ```
 
 
+ilc_peps06: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over)
 ```{r}
 # Persons at risk of poverty or social exclusion
 # unit: percentage
 
 ilc_peps06 = ilc_peps06 |> separate(`freq,c_birth,sex,age,unit,geo\\TIME_PERIOD`, 
-        into = c("freq", "unit","c_birth","sex","age","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
+        into = c("freq", "unit","c_birth","sex","age","geo"), 
+        sep = ",")
+colnames(ilc_peps06)
 ```
 
 
+ilc_lvps16: Distribution of population by group of country of birth and tenure status (population aged 18 and over)
 ```{r}
 # Distribution of population by group of country of birth and tenure status
-# [OWN]-Owner, [RENT]-Tenant
 ilc_lvps16 = ilc_lvps16 |> separate(`freq,unit,tenure,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq","unit","tenure","c_birth","sex","age","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
+        into = c("freq","unit","tenure","c_birth","sex","age","geo"), 
+        sep = ",")
+colnames(ilc_lvps16)
+
 ```
+
+
+edat_lfs_9912: Population by educational attainment level, sex, age and country of birth
 ```{r}
-# Population by educational attainment level, sex, age and country of birth
-# isced11
-# [ED3-8]Upper secondary, post-secondary non-tertiary and tertiary education (levels 3-8)
-# [ED3_4]Upper secondary and post-secondary non-tertiary education (levels 3 and 4)
-# [ED3_4GEN]Upper secondary and post-secondary non-tertiary education (levels 3 and 4) - general
-# [ED3_4VOC]Upper secondary and post-secondary non-tertiary education (levels 3 and 4) - vocational
-# [ED5-8]Tertiary education (levels 5-8)
 
 edat_lfs_9912 = edat_lfs_9912 |> separate(`freq,unit,sex,isced11,c_birth,age,geo\\TIME_PERIOD`, 
-        into = c("freq","unit","sex","isced11","c_birth","age","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
+        into = c("freq","unit","sex","isced11","c_birth","age","geo"), 
+        sep = ",")
+colnames(edat_lfs_9912)
 ```
 
+
+lfst_r_lfur2gacu: Unemployment rates by sex, age, country of birth and degree of urbanisation
 ```{r}
-# unit: thousand people
-# deg_urb: degree of urbanization
-# [TOTAL]Total, [DEG1]Cities, [DEG2]Towns and suburbs, [DEG3]Rural areas, [NRP]No response
+
 lfst_r_lfur2gacu = lfst_r_lfur2gacu |> separate(`freq,unit,deg_urb,c_birth,sex,age,geo\\TIME_PERIOD`, 
-        into = c("freq","unit","deg_urb","c_birth","sex","age","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
-
+        into = c("freq","unit","deg_urb","c_birth","sex","age","geo"), 
+        sep = ",")
+colnames(lfst_r_lfur2gacu)
 ```
+
+
+lfst_r_eredcobu: Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation
 ```{r}
-# isced11 international standard classification of education
-# [ED0-2]Less than primary, primary and lower secondary education (levels 0-2)
-# [ED3_4]Upper secondary and post-secondary non-tertiary education (levels 3 and 4)
-# [ED5-8]Tertiary education (levels 5-8)
-# [NRP]No response, [UNK]Unknown
+
 lfst_r_eredcobu = lfst_r_eredcobu |> separate(`freq,deg_urb,c_birth,isced11,age,sex,unit,geo\\TIME_PERIOD`, 
-        into = c("freq","deg_urb","c_birth","isced11","age","sex","unit","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
-```
-```{r}
-# agedef: age definition
-# [REACH]: Age reached during the year, [COMPLET]: Age in completed years
-migr_imm4ctb = migr_imm4ctb |> separate(`freq,age,agedef,c_birth,unit,sex,geo\\TIME_PERIOD`, 
-        into = c("freq","age","agedef","c_birth","unit","sex","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
+        into = c("freq","deg_urb","c_birth","isced11","age","sex","unit","geo"), 
+        sep = ",")
+colnames(lfst_r_eredcobu)
 ```
 
-```{r}
-migr_emi4ctb = migr_emi4ctb |> separate(`freq,age,agedef,c_birth,unit,sex,geo\\TIME_PERIOD`, 
-        into = c("freq","age","agedef","c_birth","unit","sex","geo", "\\TIME_PERIOD"), 
-        sep = ",") |> select(!`\\TIME_PERIOD`)
-```
-
-```{r}
-colnames(migr_emi4ctb)
-```
-
-
-```{r}
-
-```
-
-
-```{r}
-```
-
-
-```{r}
-
-```
 
 
