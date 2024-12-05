@@ -87,6 +87,41 @@ unit: unit of measure
 
 geo: Geopolitical Entity
 
+urb_cpopcb:
+
+cities index:
+
+-[BE] Belgium
+-[BG] Bulgaria
+-[CZ] Czech Republic
+-[DK] Denmark
+-[DE] Germany
+-[EE] Estonia
+-[IE] Ireland
+-[EL] Greece
+-[ES] Spain
+-[FR] France
+-[IT] Italy
+-[CY] Cyprus
+-[LV] Latvia
+-[LT] Lithuania
+-[LU] Luxembourg(Grand Duchy)
+-[HU] Hungary
+-[MT] Malta
+-[NL] Netherlands
+-[AT] Austria
+-[PL] Poland
+-[PT] Portugal
+-[RO] Romania
+-[SI] Slovenia
+-[SK] Slovakia
+-[FI] Finland
+-[SE] Sweden
+-[NO] Norge
+-[CH] Schweiz/Suisse
+-[UK] United Kingdom
+
+
 ## urb_cpopcb
 
 Title: Population by citizenship and country of birth - cities and greater cities.
@@ -98,6 +133,12 @@ Description: Contains population data classified by citizenship and country of b
 Fields: freq, indic_ur, cities
 
 Ranges: 1990-2024
+
+```{r}
+a <-  
+
+
+```
 
 
 ## ilc_di16
@@ -119,11 +160,19 @@ Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw16/default/table?lang
 
 Title: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over).
 
-Description: Captures poverty rates among employed individuals, broken down by citizenship groups.
+Description: Captures poverty rates among employed individuals, broken down by country of birth groups.
 
 Fields: freq,unit,c_birth,sex,age,geo
   
 Ranges: 2003-2023
+
+```{r}
+
+a <- ilc_iw16 |>
+  filter(`geo` == "FR" )
+a
+
+```
 
 
 ## ilc_peps06n:
@@ -153,6 +202,8 @@ Ranges: 2003-2024
 
 
 ## edat_lfs_9912:
+
+
 
 Link: https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata
 
