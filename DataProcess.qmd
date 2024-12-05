@@ -10,19 +10,20 @@ library(here)
 library(vroom)
 library(tidyr)
 library(dplyr)
+library(eurostat)
 ```
 
 ## Read Dataset
 ```{r}
-urb_cpopcb = vroom('dataset//estat_urb_cpopcb.tsv',delim = "\t",show_col_types = FALSE)
-ilc_di16 = vroom('dataset//estat_ilc_di16.tsv',delim = "\t",show_col_types = FALSE)
-ilc_iw16 = vroom('dataset//estat_ilc_iw16.tsv',show_col_types = FALSE)
-ilc_peps06 = vroom('dataset//estat_ilc_peps06.tsv',show_col_types = FALSE)
-ilc_lvps16 = vroom('dataset//estat_ilc_lvps16.tsv',show_col_types = FALSE)
-edat_lfs_9912 = vroom('dataset//estat_edat_lfs_9912.tsv',show_col_types = FALSE)
-lfsa_pfgacedm = vroom('dataset//estat_lfsa_pfgacedm.tsv',show_col_types = FALSE)
-lfst_r_lfur2gacu = vroom('dataset//estat_lfst_r_lfur2gacu.tsv',show_col_types = FALSE)
-lfst_r_eredcobu = vroom('dataset//estat_lfst_r_eredcobu.tsv',show_col_types = FALSE)
+urb_cpopcb <- get_eurostat('urb_cpopcb',time_format = "num", stringsAsFactors = TRUE)
+ilc_di16 <-  get_eurostat('ilc_di16',time_format = "num",stringAsFactors = TRUE)
+ilc_iw16 <-  get_eurostat('ilc_iw16',time_format = "num",stringAsFactors = TRUE)
+ilc_peps06 <-  get_eurostat('ilc_peps06',time_format = "num",stringAsFactors = TRUE)
+ilc_lvps16 <-  get_eurostat('ilc_lvps16',time_format = "num",stringAsFactors = TRUE)
+edat_lfs_9912 <-  get_eurostat('edat_lfs_9912',time_format = "num",stringAsFactors = TRUE)
+lfsa_pfgacedm <-  get_eurostat('lfsa_pfgacedm',time_format = "num",stringAsFactors = TRUE)
+lfst_r_lfur2gacu <-  get_eurostat('lfst_r_lfur2gacu',time_format = "num",stringAsFactors = TRUE)
+lfst_r_eredcobu <-  get_eurostat('lfst_r_eredcobu',time_format = "num",stringAsFactors = TRUE)
 ```
 
 ## Deal with Dataset
