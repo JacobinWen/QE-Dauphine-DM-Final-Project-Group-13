@@ -11,6 +11,7 @@ library(vroom)
 library(tidyr)
 library(dplyr)
 library(eurostat)
+library(ggplot2)
 ```
 
 ## Read Dataset
@@ -24,57 +25,143 @@ edat_lfs_9912 <-  get_eurostat('edat_lfs_9912',time_format = "num",stringAsFacto
 lfsa_pfgacedm <-  get_eurostat('lfsa_pfgacedm',time_format = "num",stringAsFactors = TRUE)
 lfst_r_lfur2gacu <-  get_eurostat('lfst_r_lfur2gacu',time_format = "num",stringAsFactors = TRUE)
 lfst_r_eredcobu <-  get_eurostat('lfst_r_eredcobu',time_format = "num",stringAsFactors = TRUE)
+edat_lfs_9915 <-  get_eurostat('edat_lfs_9915',time_format = "num",stringAsFactors = TRUE)
+
+migr_imm8 <-  get_eurostat('migr_imm8',time_format = "num",stringAsFactors = TRUE)
+```
+
+```{r}
+countries = c("BE","BG","CZ","DK","DE","EE","IE","EL","ES","FR","IT","CY","LV","LT","LU","HU","MT","NL","AT","PL","PT","RO","SI","SK","FI","SE","NO","CH","UK")
+
 ```
 
 <<<<<<< HEAD
 =======
 ## Describe the data
 
-`urb_cpopcb` is xxx, it has `r NROW(urb_cpopcb)` rows, `r NCOL(urb_cpopcb)` columns.
+`urb_cpopcb` is xxx, it has `{r} NROW(urb_cpopcb)` rows, `{r} NCOL(urb_cpopcb)` columns.
 
-`ilc_di16` is xxx, it has `r NROW(ilc_di16)` rows, `r NCOL(ilc_di16)` columns.
+`ilc_di16` is xxx, it has `{r} NROW(ilc_di16)` rows, `{r} NCOL(ilc_di16)` columns.
 
-`ilc_iw16` is xxx, it has `r NROW(ilc_iw16)` rows, `r NCOL(ilc_iw16)` columns.
+`ilc_iw16` is xxx, it has `{r} NROW(ilc_iw16)` rows, `{r} NCOL(ilc_iw16)` columns.
 
-`ilc_peps06` is xxx, it has `r NROW(ilc_peps06)` rows, `r NCOL(ilc_peps06)` columns.
+`ilc_peps06` is xxx, it has `{r} NROW(ilc_peps06)` rows, `{r} NCOL(ilc_peps06)` columns.
 
-`ilc_lvps16` is xxx, it has `r NROW(ilc_lvps16)` rows, `r NCOL(ilc_lvps16)` columns.
+`ilc_lvps16` is xxx, it has `{r} NROW(ilc_lvps16)` rows, `{r} NCOL(ilc_lvps16)` columns.
 
-`edat_lfs_9912` is xxx, it has `r NROW(edat_lfs_9912)` rows, `r NCOL(edat_lfs_9912)` columns.
+`edat_lfs_9912` is xxx, it has `{r} NROW(edat_lfs_9912)` rows, `{r} NCOL(edat_lfs_9912)` columns.
 
-`lfsa_pfgacedm` is xxx, it has `r NROW(lfsa_pfgacedm)` rows, `r NCOL(lfsa_pfgacedm)` columns.
+`lfsa_pfgacedm` is xxx, it has `{r} NROW(lfsa_pfgacedm)` rows, `{r} NCOL(lfsa_pfgacedm)` columns.
 
-`lfst_r_lfur2gacu` is xxx, it has `r NROW(lfst_r_lfur2gacu)` rows, `r NCOL(lfst_r_lfur2gacu)` columns.
+`lfst_r_lfur2gacu` is xxx, it has `{r} NROW(lfst_r_lfur2gacu)` rows, `{r} NCOL(lfst_r_lfur2gacu)` columns.
 
-`lfst_r_eredcobu` is xxx, it has `r NROW(lfst_r_eredcobu)` rows, `r NCOL(lfst_r_eredcobu)` columns.
+`lfst_r_eredcobu` is xxx, it has `{r} NROW(lfst_r_eredcobu)` rows, `{r} NCOL(lfst_r_eredcobu)` columns.
 
 ## Research Question
 
-What decides the income level of 
+1. Does the scale of immigration influence the income of immigrants? 
+
+In the first question, we take the immigrant scale (foreign-born population as a proportion in total population) as independent variable, and the median/average income(measured by purchasing power standard) of immigrants as dependent variable. To accurately identify the effect of immigration scale on immigrants' income, we keep the individual characteristics as constant(sex,age), and introduce some basic indicators of a country as controlled variables, including population, GDP, and inflation.
+
+With this research part, we can identify the concentration effect of immigrants on themselves. More precisely, whether the concentration of immigrants improve or decrease the welfare of immigrants.
+
+We also want to explore the immigration trend within a single country, which requires us to use time series data. Thus we collect the annual immigration data of each country, spanning between 2003 and 2023.
+
+Simultaneity should be noticed so that we come to the second part of question. To what extent the immigration affect the economy of targeted countries? In this part we also conduct cross-national comparative analysis and time series for longitudinal impact. While this part has GDP as dependent variable and immigration scale as independent variable, and controlled variables keep the same.
+
+Through this part of research, we can figure out the degree of significance of immigration for economic development of European countries.
+
+The data panel used in two parts of this question is the same. 
+
+After the regression we implement Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
+
+
+- income regress on number of immigration and sex, country of birth, geo
+
+- join by urb_cpopcb, ilc_di16
+
+2. What factors within immigrants group decide their employment rate? Compared to the native population, what's the difference of these effect? What's the mechanism 
+
+influences the employment rate of immigrants, education/ages/sex/degree of urbanization/wage of native country? control by scale (use join)
+
+- join by employment rate, population, scale.
+
 
 ## Introduce the variable
 
 we introduce our variables in this part.
 
+we discard age.
 
-
-sex, age, country of birth, education level, income, (un)employment rate, 
+sex, age, country of birth, education level, income, (un)employment rate, native income...  
 
 ## Clean the data
 
 we clean our data set in this part.
 
 `urb_cpopcb` is table of city-level population data by citizenship and country of birth, and we need to use `filter` method to extract our dataset.
-for the indic_ur(urban audit indicator), we choose `DE2002I` (EU foreigners as a proportion of population), `DE2003I` (Non-EU foreigners as a proportion of population) and `DE2007I` Foreigners as a proportion of population`.
+for the indic_ur(urban audit indicator), we choose [DE2008I]Native-born as a proportion of population
+- [DE2009I]Foreign-born as a proportion of population, [DE2009V]Foreign-born, 
+for the dependent variable of first research question, we choose employment rate.
+
 
 ```{r}
-urb_cpopcb|>filter(cities=='AT' & indic_ur=='DE2008I')
-```
-```{r}
-urb_cpopcb|>filter(cities=='AT' & indic_ur=='DE2003I')
+urb_cpopcb|>filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries)) |> 
+            mutate(c_birth = ifelse(indic_ur == "DE2002V", "EU foreigners", 
+                             ifelse(indic_ur == "DE2003V", "Non-EU foreigners", "Other")))
 ```
 
+<<<<<<< HEAD
 >>>>>>> e750cd88168600f6974a52b42b871f162b485d61
+=======
+`ilc_di16` is table of median income, it contains different unit of measurement. Considering the inflation, we choose the PPS (Purchasing power standard)
+```{r}
+ilc_di16 |> filter(unit=='PPS')
+```
+
+
+# Basic Statistic Description 
+
+
+# Plot the Data
+```{r}
+urb_cpopcb|>filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries))|>
+  filter(cities=='DK')|>ggplot(aes(TIME_PERIOD,values))+geom_line()+facet_grid(vars(indic_ur))
+```
+
+```{r}
+ilc_di16 |> filter((sex=='T')&(age=='Y_GE18')&(c_birth=='FOR')&
+    (indic_il=='MEI_E')&(unit=='PPS')&(geo%in%countries))
+
+```
+
+
+```{r}
+migr_imm8|>filter((age=='TOTAL')&(sex=='T')&(agedef=='COMPLET')&(geo=='PL')) |>
+  ggplot(aes(TIME_PERIOD,values))+geom_line()
+```
+
+```{r}
+migr_imm8|>filter((age=='TOTAL')&(sex=='T')&(agedef=='COMPLET')&(geo%in%countries))
+```
+
+
+```{r}
+a = ilc_di16 |> filter((sex=='T')&(age=='Y_GE18')&
+    (indic_il=='MEI_E')&(unit=='PPS')&(geo%in%countries)) |> mutate(income=values) |>
+    select(geo,c_birth,TIME_PERIOD,income)
+b = migr_imm8|>filter((age=='TOTAL')&(sex=='T')&(agedef=='COMPLET')&(geo%in%countries))
+
+panelA = a |> inner_join(b, by = c("geo","TIME_PERIOD"))
+panelA = panelA |> select(geo,c_birth,TIME_PERIOD,income,values)
+panelA
+```
+```{r}
+edat_lfs_9915 |> filter((sex=="T")&(deg_urb=="TOTAL")&(geo%in%countries)&(isced11=="ED5-8")&
+                          (age=='Y15-64')&(c_birth=="FOR"))
+edat_lfs_9915|> distinct(deg_urb) |> pull(deg_urb)
+```
+>>>>>>> 587a126bc7bb6fc86fe8905648a488b9cfb91ba4
 
 
 ## Join the data
