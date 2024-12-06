@@ -26,8 +26,9 @@ lfsa_pfgacedm <-  get_eurostat('lfsa_pfgacedm',time_format = "num",stringAsFacto
 lfst_r_eredcobu <-  get_eurostat('lfst_r_eredcobu',time_format = "num",stringAsFactors = TRUE)
 edat_lfs_9915 <-  get_eurostat('edat_lfs_9915',time_format = "num",stringAsFactors = TRUE)
 migr_imm8 <-  get_eurostat('migr_imm8',time_format = "num",stringAsFactors = TRUE)
-
 demo_pjangroup <-  get_eurostat('demo_pjangroup',time_format = "num",stringAsFactors = TRUE)
+
+ilc_di03 <-  get_eurostat('ilc_di03',time_format = "num",stringAsFactors = TRUE)
 ```
 
 `countries` is vector of all fields of EU contries.
@@ -44,25 +45,27 @@ birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 
 ## Describe the data
 
-`urb_cpopcb` is xxx, it has `{r} NROW(urb_cpopcb)` rows, `{r} NCOL(urb_cpopcb)` columns.
+urb_cpopcb is xxx, it has `{r} NROW(urb_cpopcb)` rows, `{r} NCOL(urb_cpopcb)` columns.
 
-`ilc_di16` is xxx, it has `{r} NROW(ilc_di16)` rows, `{r} NCOL(ilc_di16)` columns.
+ilc_di03 is xxx, it has `{r} NROW(ilc_di03)` rows, `{r} NCOL(ilc_di03)` columns.
 
-`ilc_iw16` is xxx, it has `{r} NROW(ilc_iw16)` rows, `{r} NCOL(ilc_iw16)` columns.
+ilc_di16 is xxx, it has `{r} NROW(ilc_di16)` rows, `{r} NCOL(ilc_di16)` columns.
 
-`ilc_peps06` is xxx, it has `{r} NROW(ilc_peps06)` rows, `{r} NCOL(ilc_peps06)` columns.
+ilc_iw16 is xxx, it has `{r} NROW(ilc_iw16)` rows, `{r} NCOL(ilc_iw16)` columns.
 
-`ilc_lvps16` is xxx, it has `{r} NROW(ilc_lvps16)` rows, `{r} NCOL(ilc_lvps16)` columns.
+ilc_peps06 is xxx, it has `{r} NROW(ilc_peps06)` rows, `{r} NCOL(ilc_peps06)` columns.
 
-`edat_lfs_9912` is xxx, it has `{r} NROW(edat_lfs_9912)` rows, `{r} NCOL(edat_lfs_9912)` columns.
+ilc_lvps16 is xxx, it has `{r} NROW(ilc_lvps16)` rows, `{r} NCOL(ilc_lvps16)` columns.
 
-`lfsa_pfgacedm` is xxx, it has `{r} NROW(lfsa_pfgacedm)` rows, `{r} NCOL(lfsa_pfgacedm)` columns.
+edat_lfs_9912 is xxx, it has `{r} NROW(edat_lfs_9912)` rows, `{r} NCOL(edat_lfs_9912)` columns.
 
-`demo_pjangroup` is xxx, it has `{r} NROW(demo_pjangroup)` rows, `{r} NCOL(demo_pjangroup)` columns.
+lfsa_pfgacedm is xxx, it has `{r} NROW(lfsa_pfgacedm)` rows, `{r} NCOL(lfsa_pfgacedm)` columns.
 
-`lfst_r_eredcobu` is xxx, it has `{r} NROW(lfst_r_eredcobu)` rows, `{r} NCOL(lfst_r_eredcobu)` columns.
+demo_pjangroup is xxx, it has `{r} NROW(demo_pjangroup)` rows, `{r} NCOL(demo_pjangroup)` columns.
 
-`migr_imm8` is xxx, it has `{r} NROW(migr_imm8)` rows, `{r} NCOL(migr_imm8)` columns.
+lfst_r_eredcobu is xxx, it has `{r} NROW(lfst_r_eredcobu)` rows, `{r} NCOL(lfst_r_eredcobu)` columns.
+
+migr_imm8 is xxx, it has `{r} NROW(migr_imm8)` rows, `{r} NCOL(migr_imm8)` columns.
 
 
 ## Research Question
@@ -146,10 +149,15 @@ PanelA: first research question, consist of four 4 table
 Hence the Panel consists of several variables, geo, c_birth, TIME_PERIOD, Mean_income, Immigration_num, Highedu_ratio, Pop_num, and we compute a new variable `Imigration_ratio`, the ratio of Immigration to Total Population.
 
 ```{r}
+ilc_di03|> filter((sex=="T")&(age=="Y_GE18")&(geo%in%countries)&(unit=="PPS")&(indic_il=="MEI_E"))
+```
+
+
+```{r}
 
 A = ilc_di16 |> filter((sex=='T')&(age=='Y_GE18')&(c_birth%in%birth_neu | c_birth%in%birth_eu)&
-    (indic_il=='MEI_E')&(unit=='PPS')&(geo%in%countries)) |> mutate(Mean_income=values) |>
-    select(geo,c_birth,TIME_PERIOD,Mean_income)
+    (indic_il=='MEI_E')&(unit=='PPS')&(geo%in%countries)) |> mutate(Mean_income_FOR=values) |>
+    select(geo,c_birth,TIME_PERIOD,Mean_income_FOR)
 A = A |> mutate( c_birth=ifelse(c_birth%in%birth_eu, "EU_FOR", 
              ifelse(c_birth%in%birth_neu, "NEU_FOR", "Other")))
 
@@ -166,16 +174,20 @@ C = C |> mutate( c_birth=ifelse(c_birth%in%birth_eu, "EU_FOR",
 D = demo_pjangroup |> filter((sex=='T')&(age=='TOTAL')&(geo%in%countries))|>mutate(Pop_num=values)|>
   select(geo,TIME_PERIOD,Pop_num)
 
+E = ilc_di03|> filter((sex=="T")&(age=="Y_GE18")&(geo%in%countries)&(unit=="PPS")&(indic_il=="MEI_E"))|>
+  mutate(Mean_income_NAT = values)|>select(geo,TIME_PERIOD,Mean_income_NAT)
+
 
 panelA = A |> inner_join(B, by = c("geo","TIME_PERIOD")) |> 
               inner_join(C, by = c("geo","TIME_PERIOD","c_birth")) |>
-              inner_join(D, by = c("geo","TIME_PERIOD"))
-panelA = panelA |> select(geo,c_birth,TIME_PERIOD,Mean_income,Immigration_num,Highedu_ratio,Pop_num) |>
+              inner_join(D, by = c("geo","TIME_PERIOD")) |>
+              inner_join(E, by = c("geo","TIME_PERIOD"))
+panelA = panelA |> select(geo,c_birth,TIME_PERIOD,Mean_income_FOR,Mean_income_NAT,Immigration_num,Highedu_ratio,Pop_num) |>
           mutate(Imigration_ratio=Immigration_num/Pop_num)
 panelA
 ```
 ```{r}
-panelA |> ggplot(aes(Imigration_ratio,Mean_income))+geom_point()
+panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR))+geom_point()
 ```
 ```{r}
 C
@@ -187,17 +199,11 @@ edat_lfs_9915 |> filter((sex=="T")&(deg_urb=="TOTAL")&(geo%in%countries)&(isced1
                           (age=='Y15-64')&(c_birth%in%birth_neu | c_birth%in%birth_eu)) |>
       arrange(TIME_PERIOD)
 ```
-```{r}
 
-lfst_r_eredcobu
-```
+
 ```{r}
 
 ```
 
-
-## Join the data
-
-##
 
 
