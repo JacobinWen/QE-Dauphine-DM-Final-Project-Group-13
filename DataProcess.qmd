@@ -69,11 +69,12 @@ birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 
 ## Research Question
 
-1. Does the scale of immigration influence the income of immigrants? 
+### Question 1
+1. Does the scale of immigration influence the income of immigrants? To what extent does the immigration affect the economy of targeted countries?
+
+With the first part of research, we can identify the concentration effect of immigrants on themselves. More precisely, whether the concentration of immigrants improve or decrease the welfare of immigrants.
 
 In the first question, we take the immigrant scale (foreign-born population as a proportion in total population) as independent variable, and the median/average income(measured by purchasing power standard) of immigrants as dependent variable. To accurately identify the effect of immigration scale on immigrants' income, we keep the individual characteristics as constant(sex,age), and introduce some basic indicators of a country as controlled variables, including population, GDP, and inflation.
-
-With this research part, we can identify the concentration effect of immigrants on themselves. More precisely, whether the concentration of immigrants improve or decrease the welfare of immigrants.
 
 We also want to explore the immigration trend within a single country, which requires us to use time series data. Thus we collect the annual immigration data of each country, spanning between 2003 and 2023.
 
@@ -83,18 +84,18 @@ Through this part of research, we can figure out the degree of significance of i
 
 The data panel used in two parts of this question is the same. 
 
-After the regression we implement Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
+To examine the validity of regression we implement Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
 
 
-- income regress on number of immigration and sex, country of birth, geo
+### Question 2
 
-- join by urb_cpopcb, ilc_di16
+2. What factors within immigrant group decide their employment rate? Compared to the native population, what are differences of these effects? What can we conclude from these differences on the mechanism of immigration impact on the economy of targeted countries?
 
-2. What factors within immigrants group decide their employment rate? Compared to the native population, what's the difference of these effect? What's the mechanism 
+In this question, we study the key determinants of employment rate of immigrant group, incorporating comprative analysis with natives and temporal dynamics of these determinants. For example, how do the effects of factors like education and urbanization on employment rates differ for immigrants versus the native population? Moreove, we can find from this question we can find how has the demographic structure of immigrants evolved during the last 20 years.
 
-influences the employment rate of immigrants, education/ages/sex/degree of urbanization/wage of native country? control by scale (use join)
+In this part, we take the employment rate as independent variable, using education/ages/sex/degree of urbanization/wage of the natives as regressors, and the immigration scale as a controlled variable. All these data are collected over time. 
 
-- join by employment rate, population, scale.
+Similar to the first question, we adopt Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
 
 
 ## Introduce the variable
