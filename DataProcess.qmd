@@ -44,27 +44,72 @@ birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 
 <<<<<<< HEAD
 =======
-## Describe the data
+## Describe the original data file
 
-`urb_cpopcb` is xxx, it has `{r} NROW(urb_cpopcb)` rows, `{r} NCOL(urb_cpopcb)` columns.
+### Overall summary
 
-`ilc_di16` is xxx, it has `{r} NROW(ilc_di16)` rows, `{r} NCOL(ilc_di16)` columns.
+Raw data files before processing have different keys and measurement, so in overall summary we only present the column numbers and row numbers of each dataset. More detailed description for each data file is in the next subsection.
 
-`ilc_iw16` is xxx, it has `{r} NROW(ilc_iw16)` rows, `{r} NCOL(ilc_iw16)` columns.
+```{r}
 
-`ilc_peps06` is xxx, it has `{r} NROW(ilc_peps06)` rows, `{r} NCOL(ilc_peps06)` columns.
 
-`ilc_lvps16` is xxx, it has `{r} NROW(ilc_lvps16)` rows, `{r} NCOL(ilc_lvps16)` columns.
+# Organize data frames into a named list
+data_list <- list(
+  urb_cpopcb=urb_cpopcb,
+  ilc_di16=ilc_di16,
+  ilc_iw16=ilc_iw16,
+  ilc_peps06=ilc_peps06,
+  ilc_lvps16=ilc_lvps16,
+  edat_lfs_9912=edat_lfs_9912,
+  lfsa_pfgacedm=lfsa_pfgacedm,
+  demo_pjangroup=demo_pjangroup,
+  lfst_r_eredcobu=lfst_r_eredcobu,
+  migr_imm8=migr_imm8
+)
 
-`edat_lfs_9912` is xxx, it has `{r} NROW(edat_lfs_9912)` rows, `{r} NCOL(edat_lfs_9912)` columns.
+# Create the summary table
+summary_table <- bind_rows(
+  lapply(names(data_list), function(name) {
+    data <- data_list[[name]]
+    tibble(
+      Data_Frame = name,
+      Rows = nrow(data),
+      Columns = ncol(data)
+    )
+  })
+)
 
-`lfsa_pfgacedm` is xxx, it has `{r} NROW(lfsa_pfgacedm)` rows, `{r} NCOL(lfsa_pfgacedm)` columns.
+# View the summary table
+print(summary_table)
 
-`demo_pjangroup` is xxx, it has `{r} NROW(demo_pjangroup)` rows, `{r} NCOL(demo_pjangroup)` columns.
 
-`lfst_r_eredcobu` is xxx, it has `{r} NROW(lfst_r_eredcobu)` rows, `{r} NCOL(lfst_r_eredcobu)` columns.
+```
 
-`migr_imm8` is xxx, it has `{r} NROW(migr_imm8)` rows, `{r} NCOL(migr_imm8)` columns.
+### Detailed desccription for each data file
+
+#### urb_cpopcb
+
+```{r}
+
+summary_urb_cpopcb <- urb_cpopcb |>
+  filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries)) |> 
+  ## we only use the country-level data
+  group_by(indic_ur,cities) |>
+  summarise(rows = n())
+print(summary_urb_cpopcb)
+
+
+
+```
+#### ilc_di16
+```{r}
+
+ilc_di16 |> filter(unit=='PPS')
+
+```
+
+
+
 
 
 ## Research Question
@@ -76,7 +121,7 @@ With the first part of research, we can identify the concentration effect of imm
 
 In the first question, we take the immigrant scale (foreign-born population as a proportion in total population) as independent variable, and the median/average income(measured by purchasing power standard) of immigrants as dependent variable. To accurately identify the effect of immigration scale on immigrants' income, we keep the individual characteristics as constant(sex,age), and introduce some basic indicators of a country as controlled variables, including population, GDP, and inflation.
 
-We also want to explore the immigration trend within a single country, which requires us to use time series data. Thus we collect the annual immigration data of each country, spanning between 2003 and 2023.
+We also want to explore the immigration trend over time within a single country, which requires us to use time series data. Thus we collect the annual immigration data of each country, spanning between 2003 and 2023.
 
 Simultaneity should be noticed so that we come to the second part of question. To what extent the immigration affect the economy of targeted countries? In this part we also conduct cross-national comparative analysis and time series for longitudinal impact. While this part has GDP as dependent variable and immigration scale as independent variable, and controlled variables keep the same.
 
@@ -100,11 +145,21 @@ Similar to the first question, we adopt Granger Causality Tests in the time seri
 
 ## Introduce the variable
 
-we introduce our variables in this part.
+In this section we introduce some important variables.
 
-we discard age.
+### Panel A
 
-sex, age, country of birth, education level, income, (un)employment rate, native income...  
+`geo` indicates European country/region. Which country/region the abbreviations refer to can be consulted on Eurostat.
+
+`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to seperately study the interior flexibility of EU citizens and the population influx from outside EU.
+
+`Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
+
+High education?
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
+
+
 
 ## Clean the data
 
@@ -122,6 +177,7 @@ urb_cpopcb|>filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries)) 
 >>>>>>> e750cd88168600f6974a52b42b871f162b485d61
 =======
 `ilc_di16` is table of median income, it contains different unit of measurement. Considering the inflation, we choose the PPS (Purchasing power standard)
+
 ```{r}
 ilc_di16 |> filter(unit=='PPS')
 ```
