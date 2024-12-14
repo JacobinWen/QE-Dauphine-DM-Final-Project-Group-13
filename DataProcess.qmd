@@ -148,10 +148,6 @@ PanelA: first research question, consist of four 4 table
 
 Hence the Panel consists of several variables, geo, c_birth, TIME_PERIOD, Mean_income, Immigration_num, Highedu_ratio, Pop_num, and we compute a new variable `Imigration_ratio`, the ratio of Immigration to Total Population.
 
-```{r}
-ilc_di03|> filter((sex=="T")&(age=="Y_GE18")&(geo%in%countries)&(unit=="PPS")&(indic_il=="MEI_E"))
-```
-
 
 ```{r}
 
@@ -190,7 +186,7 @@ panelA
 panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR))+geom_point()
 ```
 ```{r}
-C
+lfst_r_eredcobu
 ```
 
 
