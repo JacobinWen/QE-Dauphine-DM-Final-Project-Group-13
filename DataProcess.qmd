@@ -105,36 +105,98 @@ print(summary_urb_cpopcb)
 ```
 #### ilc_di16
 ```{r}
+summary_ilc_dil6 <- ilc_di16 |> 
+  filter(unit=='PPS',geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_dil6)
 
-ilc_di16 |> filter(unit=='PPS')
+```
+#### ilc_iw16
+
+```{r}
+summary_ilc_iwl6 <- ilc_iw16 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_iwl6)
+
+```
+#### ilc_peps06
+
+```{r}
+
+summary_ilc_peps06 <- ilc_peps06 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_peps06)
+
+```
+#### ilc_lvps16
+
+```{r}
+summary_ilc_lvps16 <- ilc_lvps16 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_lvps16)
+
+```
+#### edat_lfs_9912
+
+```{r}
+summary_edat_lfs_9912 <- edat_lfs_9912 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_edat_lfs_9912)
+
+```
+#### lfsa_pfgacedm
+
+```{r}
+
+summary_lfsa_pfgacedm <- lfsa_pfgacedm |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_lfsa_pfgacedm)
 
 ```
 
+#### lfst_r_eredcobu
 
+```{r}
+summary_lfst_r_eredcobu <- lfst_r_eredcobu |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_lfst_r_eredcobu)
 
-=======
-urb_cpopcb is xxx, it has `{r} NROW(urb_cpopcb)` rows, `{r} NCOL(urb_cpopcb)` columns.
+```
+#### demo_pjangroup
 
-ilc_di03 is xxx, it has `{r} NROW(ilc_di03)` rows, `{r} NCOL(ilc_di03)` columns.
+```{r}
+summary_demo_pjangroup <- demo_pjangroup |> 
+  filter(geo%in%countries)|>
+  group_by(geo) |>
+  summarise(rows = n())
+print(summary_demo_pjangroup)
 
-ilc_di16 is xxx, it has `{r} NROW(ilc_di16)` rows, `{r} NCOL(ilc_di16)` columns.
+```
 
-ilc_iw16 is xxx, it has `{r} NROW(ilc_iw16)` rows, `{r} NCOL(ilc_iw16)` columns.
+#### migr_imm8
 
-ilc_peps06 is xxx, it has `{r} NROW(ilc_peps06)` rows, `{r} NCOL(ilc_peps06)` columns.
+```{r}
 
-ilc_lvps16 is xxx, it has `{r} NROW(ilc_lvps16)` rows, `{r} NCOL(ilc_lvps16)` columns.
+summary_migr_imm8 <- migr_imm8 |> 
+  filter(geo%in%countries)|>
+  group_by(geo) |>
+  summarise(rows = n())
+print(summary_migr_imm8)
 
-edat_lfs_9912 is xxx, it has `{r} NROW(edat_lfs_9912)` rows, `{r} NCOL(edat_lfs_9912)` columns.
-
-lfsa_pfgacedm is xxx, it has `{r} NROW(lfsa_pfgacedm)` rows, `{r} NCOL(lfsa_pfgacedm)` columns.
-
-demo_pjangroup is xxx, it has `{r} NROW(demo_pjangroup)` rows, `{r} NCOL(demo_pjangroup)` columns.
-
-lfst_r_eredcobu is xxx, it has `{r} NROW(lfst_r_eredcobu)` rows, `{r} NCOL(lfst_r_eredcobu)` columns.
-
-migr_imm8 is xxx, it has `{r} NROW(migr_imm8)` rows, `{r} NCOL(migr_imm8)` columns.
->>>>>>> 50bdc0aef6dca584f970e2a091367103f1fa0e85
+```
 
 
 ## Research Question
