@@ -47,7 +47,108 @@ birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 =======
 ## Describe the original data file
 
-<<<<<<< HEAD
+### urb_cpopcb
+
+
+Title: Population by citizenship and country of birth - cities and greater cities.
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/urb_cpopcb/default/table?lang=en&category=mi.mii.mii_urb
+
+Description: Contains population data classified by citizenship and country of birth for urban and metropolitan areas, enabling demographic and migration trend analyses.
+
+Fields: freq, indic_ur, cities
+
+Ranges: 1990-2024
+
+### ilc_di16
+
+Title: Mean and median income by group of country of birth (population aged 18 and over).
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Description: Similar to ilc_di15 but focuses on grouping by country of birth, highlighting income disparities among native-born and foreign-born populations.
+
+Fields: freq,unit,indic_il,c_birth,sex,age,geo
+
+Ranges: 2003-2023
+
+
+### ilc_iw16
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Title: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over).
+
+Description: Captures poverty rates among employed individuals, broken down by country of birth groups.
+
+Fields: freq,unit,c_birth,sex,age,geo
+  
+Ranges: 2003-2023
+
+### ilc_peps06n:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_peps06/default/table?lang=en&category=mi.mii.mii_soinc.mii_pe
+
+Title: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over).
+
+Description: Similar to ilc_peps05n but categorized by country of birth.
+
+Fields: freq,c_birth,sex,age,unit,geo
+
+Ranges: 2003-2020
+
+
+### ilc_lvps16:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_lvps16/default/table?lang=en&category=mi.mii.mii_soinc.mii_lc
+
+Title: Distribution of population by group of country of birth and tenure status (population aged 18 and over).
+
+Description: Reports housing tenure types (e.g., owned or rented) across groups defined by country of birth.
+
+Fields: freq,unit,tenure,c_birth,sex,age,geo
+
+Ranges: 2003-2024
+
+
+### edat_lfs_9912:
+
+
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata
+
+Title: Population by educational attainment level, sex, age, and country of birth (%).
+
+Description: Shows educational attainment levels across demographic and migration status categories.
+
+Fields: freq,unit,sex,isced11,c_birth,age,geo
+
+Ranges: 2004-2023
+
+
+### lfst_r_lfur2gacu
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_lfur2gacu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_une_r
+
+Title: Unemployment rates by sex, age, country of birth and degree of urbanisation
+
+Fields: freq,unit,deg_urb,c_birth,sex,age,geo
+
+Ranges: 1995-2023
+
+
+### lfst_r_eredcobu
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_eredcobu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_em_r
+
+Title: Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation
+
+Fields: freq,deg_urb,c_birth,isced11,age,sex,unit,geo
+
+Ranges: 1995-2023
+
+
+## Summary
 ### Overall summary
 
 Raw data files before processing have different keys and measurement, so in overall summary we only present the column numbers and row numbers of each dataset. More detailed description for each data file is in the next subsection.
