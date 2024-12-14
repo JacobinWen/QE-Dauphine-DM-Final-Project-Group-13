@@ -43,7 +43,7 @@ birth_eu = c("EU28_FOR","EU27_2007_FOR","EU27_2020_FOR")
 birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 ```
 
-<<<<<<< HEAD
+
 =======
 ## Describe the original data file
 
@@ -188,7 +188,7 @@ print(summary_table)
 
 ```
 
-### Detailed desccription for each data file
+### Summary for each data file
 
 #### urb_cpopcb
 
