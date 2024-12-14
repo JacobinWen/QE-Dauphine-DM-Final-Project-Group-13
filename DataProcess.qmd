@@ -43,51 +43,311 @@ birth_eu = c("EU28_FOR","EU27_2007_FOR","EU27_2020_FOR")
 birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 ```
 
-## Describe the data
 
-urb_cpopcb is xxx, it has `{r} NROW(urb_cpopcb)` rows, `{r} NCOL(urb_cpopcb)` columns.
+=======
+## Describe the original data file
 
-ilc_di03 is xxx, it has `{r} NROW(ilc_di03)` rows, `{r} NCOL(ilc_di03)` columns.
+### urb_cpopcb
 
-ilc_di16 is xxx, it has `{r} NROW(ilc_di16)` rows, `{r} NCOL(ilc_di16)` columns.
 
-ilc_iw16 is xxx, it has `{r} NROW(ilc_iw16)` rows, `{r} NCOL(ilc_iw16)` columns.
+Title: Population by citizenship and country of birth - cities and greater cities.
 
-ilc_peps06 is xxx, it has `{r} NROW(ilc_peps06)` rows, `{r} NCOL(ilc_peps06)` columns.
+Link: https://ec.europa.eu/eurostat/databrowser/view/urb_cpopcb/default/table?lang=en&category=mi.mii.mii_urb
 
-ilc_lvps16 is xxx, it has `{r} NROW(ilc_lvps16)` rows, `{r} NCOL(ilc_lvps16)` columns.
+Description: Contains population data classified by citizenship and country of birth for urban and metropolitan areas, enabling demographic and migration trend analyses.
 
-edat_lfs_9912 is xxx, it has `{r} NROW(edat_lfs_9912)` rows, `{r} NCOL(edat_lfs_9912)` columns.
+Fields: freq, indic_ur, cities
 
-lfsa_pfgacedm is xxx, it has `{r} NROW(lfsa_pfgacedm)` rows, `{r} NCOL(lfsa_pfgacedm)` columns.
+Ranges: 1990-2024
 
-demo_pjangroup is xxx, it has `{r} NROW(demo_pjangroup)` rows, `{r} NCOL(demo_pjangroup)` columns.
+### ilc_di16
 
-lfst_r_eredcobu is xxx, it has `{r} NROW(lfst_r_eredcobu)` rows, `{r} NCOL(lfst_r_eredcobu)` columns.
+Title: Mean and median income by group of country of birth (population aged 18 and over).
 
-migr_imm8 is xxx, it has `{r} NROW(migr_imm8)` rows, `{r} NCOL(migr_imm8)` columns.
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Description: Similar to ilc_di15 but focuses on grouping by country of birth, highlighting income disparities among native-born and foreign-born populations.
+
+Fields: freq,unit,indic_il,c_birth,sex,age,geo
+
+Ranges: 2003-2023
+
+
+### ilc_iw16
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+
+Title: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over).
+
+Description: Captures poverty rates among employed individuals, broken down by country of birth groups.
+
+Fields: freq,unit,c_birth,sex,age,geo
+  
+Ranges: 2003-2023
+
+### ilc_peps06n:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_peps06/default/table?lang=en&category=mi.mii.mii_soinc.mii_pe
+
+Title: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over).
+
+Description: Similar to ilc_peps05n but categorized by country of birth.
+
+Fields: freq,c_birth,sex,age,unit,geo
+
+Ranges: 2003-2020
+
+
+### ilc_lvps16:
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_lvps16/default/table?lang=en&category=mi.mii.mii_soinc.mii_lc
+
+Title: Distribution of population by group of country of birth and tenure status (population aged 18 and over).
+
+Description: Reports housing tenure types (e.g., owned or rented) across groups defined by country of birth.
+
+Fields: freq,unit,tenure,c_birth,sex,age,geo
+
+Ranges: 2003-2024
+
+
+### edat_lfs_9912:
+
+
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata
+
+Title: Population by educational attainment level, sex, age, and country of birth (%).
+
+Description: Shows educational attainment levels across demographic and migration status categories.
+
+Fields: freq,unit,sex,isced11,c_birth,age,geo
+
+Ranges: 2004-2023
+
+
+### lfst_r_lfur2gacu
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_lfur2gacu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_une_r
+
+Title: Unemployment rates by sex, age, country of birth and degree of urbanisation
+
+Fields: freq,unit,deg_urb,c_birth,sex,age,geo
+
+Ranges: 1995-2023
+
+
+### lfst_r_eredcobu
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_eredcobu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_em_r
+
+Title: Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation
+
+Fields: freq,deg_urb,c_birth,isced11,age,sex,unit,geo
+
+Ranges: 1995-2023
+
+
+## Summary
+### Overall summary
+
+Raw data files before processing have different keys and measurement, so in overall summary we only present the column numbers and row numbers of each dataset. More detailed description for each data file is in the next subsection.
+
+```{r}
+
+
+# Organize data frames into a named list
+data_list <- list(
+  urb_cpopcb=urb_cpopcb,
+  ilc_di16=ilc_di16,
+  ilc_iw16=ilc_iw16,
+  ilc_peps06=ilc_peps06,
+  ilc_lvps16=ilc_lvps16,
+  edat_lfs_9912=edat_lfs_9912,
+  lfsa_pfgacedm=lfsa_pfgacedm,
+  demo_pjangroup=demo_pjangroup,
+  lfst_r_eredcobu=lfst_r_eredcobu,
+  migr_imm8=migr_imm8
+)
+
+# Create the summary table
+summary_table <- bind_rows(
+  lapply(names(data_list), function(name) {
+    data <- data_list[[name]]
+    tibble(
+      Data_Frame = name,
+      Rows = nrow(data),
+      Columns = ncol(data)
+    )
+  })
+)
+
+# View the summary table
+print(summary_table)
+
+
+```
+
+### Summary for each data file
+
+#### urb_cpopcb
+
+```{r}
+
+summary_urb_cpopcb <- urb_cpopcb |>
+  filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries)) |> 
+  ## we only use the country-level data
+  group_by(indic_ur,cities) |>
+  summarise(rows = n())
+print(summary_urb_cpopcb)
+
+
+
+```
+#### ilc_di16
+```{r}
+summary_ilc_dil6 <- ilc_di16 |> 
+  filter(unit=='PPS',geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_dil6)
+
+```
+#### ilc_iw16
+
+```{r}
+summary_ilc_iwl6 <- ilc_iw16 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_iwl6)
+
+```
+#### ilc_peps06
+
+```{r}
+
+summary_ilc_peps06 <- ilc_peps06 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_peps06)
+
+```
+#### ilc_lvps16
+
+```{r}
+summary_ilc_lvps16 <- ilc_lvps16 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_ilc_lvps16)
+
+```
+#### edat_lfs_9912
+
+```{r}
+summary_edat_lfs_9912 <- edat_lfs_9912 |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_edat_lfs_9912)
+
+```
+#### lfsa_pfgacedm
+
+```{r}
+
+summary_lfsa_pfgacedm <- lfsa_pfgacedm |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_lfsa_pfgacedm)
+
+```
+
+#### lfst_r_eredcobu
+
+```{r}
+summary_lfst_r_eredcobu <- lfst_r_eredcobu |> 
+  filter(geo%in%countries)|>
+  group_by(geo,c_birth) |>
+  summarise(rows = n())
+print(summary_lfst_r_eredcobu)
+
+```
+#### demo_pjangroup
+
+```{r}
+summary_demo_pjangroup <- demo_pjangroup |> 
+  filter(geo%in%countries)|>
+  group_by(geo) |>
+  summarise(rows = n())
+print(summary_demo_pjangroup)
+
+```
+
+#### migr_imm8
+
+```{r}
+
+summary_migr_imm8 <- migr_imm8 |> 
+  filter(geo%in%countries)|>
+  group_by(geo) |>
+  summarise(rows = n())
+print(summary_migr_imm8)
+
+```
 
 
 ## Research Question
 
-1. Will the scale of immigrants influence the living standard/at risk of poverty? 
+### Question 1
+1. Does the scale of immigration influence the income of immigrants? To what extent does the immigration affect the economy of targeted countries?
 
-- income regress on number of immigration and sex, country of birth, geo
+With the first part of research, we can identify the concentration effect of immigrants on themselves. More precisely, whether the concentration of immigrants improve or decrease the welfare of immigrants.
 
-- join by urb_cpopcb, ilc_di16
+In the first question, we take the immigrant scale (foreign-born population as a proportion in total population) as independent variable, and the median/average income(measured by purchasing power standard) of immigrants as dependent variable. To accurately identify the effect of immigration scale on immigrants' income, we keep the individual characteristics as constant(sex,age), and introduce some basic indicators of a country as controlled variables, including population, GDP, and inflation.
 
-2. What influences the employment rate of immigrants, education/ages/sex/degree of urbanization/wage of native country? control by scale (use join)
+We also want to explore the immigration trend over time within a single country, which requires us to use time series data. Thus we collect the annual immigration data of each country, spanning between 2003 and 2023.
 
-- join by employment rate, population, scale.
+Simultaneity should be noticed so that we come to the second part of question. To what extent the immigration affect the economy of targeted countries? In this part we also conduct cross-national comparative analysis and time series for longitudinal impact. While this part has GDP as dependent variable and immigration scale as independent variable, and controlled variables keep the same.
+
+Through this part of research, we can figure out the degree of significance of immigration for economic development of European countries.
+
+The data panel used in two parts of this question is the same. 
+
+To examine the validity of regression we implement Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
+
+
+### Question 2
+
+2. What factors within immigrant group decide their employment rate? Compared to the native population, what are differences of these effects? What can we conclude from these differences on the mechanism of immigration impact on the economy of targeted countries?
+
+In this question, we study the key determinants of employment rate of immigrant group, incorporating comprative analysis with natives and temporal dynamics of these determinants. For example, how do the effects of factors like education and urbanization on employment rates differ for immigrants versus the native population? Moreove, we can find from this question we can find how has the demographic structure of immigrants evolved during the last 20 years.
+
+In this part, we take the employment rate as independent variable, using education/ages/sex/degree of urbanization/wage of the natives as regressors, and the immigration scale as a controlled variable. All these data are collected over time. 
+
+Similar to the first question, we adopt Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
 
 
 ## Introduce the variable
 
-we introduce our variables in this part.
+In this section we introduce some important variables.
 
-we discard age.
+### Panel A
 
-sex, age, country of birth, education level, income, (un)employment rate, native income...  
+`geo` indicates European country/region. Which country/region the abbreviations refer to can be consulted on Eurostat.
+
+`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to seperately study the interior flexibility of EU citizens and the population influx from outside EU.
+
+`Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
+
+High education?
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
+
+
 
 ## Clean the data
 
@@ -101,7 +361,11 @@ urb_cpopcb|>filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries)) 
                    geo=cities)
 ```
 
+<<<<<<< HEAD
+>>>>>>> e750cd88168600f6974a52b42b871f162b485d61
+=======
 `ilc_di16` is table of median income, it contains different unit of measurement. Considering the inflation, we choose the PPS (Purchasing power standard)
+
 ```{r}
 ilc_di16 |> filter(unit=='PPS')
 ```
@@ -200,6 +464,7 @@ edat_lfs_9915 |> filter((sex=="T")&(deg_urb=="TOTAL")&(geo%in%countries)&(isced1
 ```{r}
 
 ```
+>>>>>>> 587a126bc7bb6fc86fe8905648a488b9cfb91ba4
 
 
 
