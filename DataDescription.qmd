@@ -305,16 +305,6 @@ Fields: freq,unit,sex,isced11,c_birth,age,geo,deg_urb
 Ranges: 2004-2023
 
 
-## lfst_r_lfur2gacu
-
-Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_lfur2gacu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_une_r
-
-Title: Unemployment rates by sex, age, country of birth and degree of urbanisation
-
-Fields: freq,unit,deg_urb,c_birth,sex,age,geo
-
-Ranges: 1995-2023
-
 
 ## lfst_r_eredcobu
 
