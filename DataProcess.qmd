@@ -45,7 +45,8 @@ birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 
 
 =======
-## Describe the original data file
+
+## Describe the data
 
 ### urb_cpopcb
 
@@ -60,6 +61,7 @@ Fields: freq, indic_ur, cities
 
 Ranges: 1990-2024
 
+
 ### ilc_di16
 
 Title: Mean and median income by group of country of birth (population aged 18 and over).
@@ -71,29 +73,6 @@ Description: Similar to ilc_di15 but focuses on grouping by country of birth, hi
 Fields: freq,unit,indic_il,c_birth,sex,age,geo
 
 Ranges: 2003-2023
-
-
-### ilc_iw16
-
-Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
-
-Title: In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over).
-
-Description: Captures poverty rates among employed individuals, broken down by country of birth groups.
-
-Fields: freq,unit,c_birth,sex,age,geo
-  
-Ranges: 2003-2023
-
-### ilc_peps06n:
-
-Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_peps06/default/table?lang=en&category=mi.mii.mii_soinc.mii_pe
-
-Title: Persons at risk of poverty or social exclusion by group of country of birth (population aged 18 and over).
-
-Fields: freq,c_birth,sex,age,unit,geo
-
-Ranges: 2003-2020
 
 
 ### ilc_lvps16:
@@ -122,25 +101,34 @@ Fields: freq,unit,sex,isced11,c_birth,age,geo
 
 Ranges: 2004-2023
 
+### migr_imm8
 
-### lfst_r_lfur2gacu
+Link: https://ec.europa.eu/eurostat/databrowser/view/migr_imm8$defaultview/default/table?lang=en
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_lfur2gacu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_une_r
+Title: Immigration by age and sex
 
-Title: Unemployment rates by sex, age, country of birth and degree of urbanisation
+Fields: age,geo,sex,time,freq,unit
 
-Fields: freq,unit,deg_urb,c_birth,sex,age,geo
+Ranges: 1990-2022
 
-Ranges: 1995-2023
+### demo_pjangroup
+
+Link: https://ec.europa.eu/eurostat/databrowser/view/demo_pjangroup$defaultview/default/table?lang=en
+
+Title: Population on 1 January by age group and sex
+
+Fields: age,geo,sex,time,freq,unit
+
+Ranges: 1960-2023
 
 
-### lfst_r_eredcobu
+## ilc_di03
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/lfst_r_eredcobu/default/table?lang=en&category=mi.mii.mii_emp_r.mii_em_r
+Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di03$defaultview/default/table?lang=en
 
-Title: Employment rates by sex, age, educational attainment level, country of birth and degree of urbanisation
+Title: Mean and median income by age and sex
 
-Fields: freq,deg_urb,c_birth,isced11,age,sex,unit,geo
+Fields: freq,unit,indic_il,c_birth,sex,age,geo
 
 Ranges: 1995-2023
 
@@ -185,12 +173,8 @@ print(summary_table)
 
 ```
 
-# Basic Statistic Description 
+### Basic Statistic Description 
 
-
-# Plot the Data
-
-### Summary for each data file
 
 #### urb_cpopcb
 
@@ -200,10 +184,11 @@ Considering there are too many cities, we only consider country-level data, so w
 urb_cpopcb_filter = urb_cpopcb |>
   filter((indic_ur%in% c('DE2003V','DE2002V'))&(cities%in%countries))
 
-summary_urb_cpopcb <-  urb_cpopcb_filter|> group_by(indic_ur,cities) |>
-  summarise(rows = n())
+summary_urb_cpopcb <-  urb_cpopcb_filter|> 
+  summarise(rows = n(),.by = c("indic_ur","cities"))
 ```
-After filters, `urb_cpopcb` has `{r}nrow(urb_cpopcb_filter)` rows, and `{r}ncol(urb_cpopcb_filter)` columns.
+
+After filters, `urb_cpopcb` has `r NROW(urb_cpopcb_filter)` rows, and `r NCOL(urb_cpopcb_filter)` columns.
 
 
 We display the number of valid data for each EU country. The distribution is not even, with some country having just 1 or 2 data sample, such as PL(Poland).
@@ -240,13 +225,13 @@ ilc_di16_filter = ilc_di16 |>
     TRUE ~ c_birth ))
 
 summary_ilc_dil6 <- ilc_di16_filter|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
+  summarise(rows = n(),.by=c('geo','c_birth'))
 
 ```
-After filters, `urb_cpopcb` has `{r}nrow(ilc_dil6_filter)` rows, and `{r}ncol(ilc_dil6_filter)` columns.
 
-We display xxx as below. Similarly, we only show some of the countries.
+After filters, `ilc_di16` has `r NROW(ilc_di16_filter)` rows, and `r NCOL(ilc_di16_filter)` columns.
+
+We display the figure as below. Similarly, we only show some of the countries.
 the figure is the average income group by countries, country of birth and sex
 
 
@@ -267,7 +252,7 @@ We conduct the similar filter operation on the table.
 ilc_di03_filter = ilc_di03 |> filter(unit=='PPS',geo%in%countries,indic_il=='MEI_E')
 ```
 
-After filters, `urb_cpopcb` has `{r}nrow(ilc_di03_filter)` rows, and `{r}ncol(ilc_di03_filter)` columns.
+After filters, `ilc_di03` has `r NROW(ilc_di03_filter)` rows, and `r NCOL(ilc_di03_filter)` columns.
 
 We display the trend of income level for different genders across country.
 ```{r}
@@ -276,6 +261,7 @@ ilc_di03_filter|>filter(age=="TOTAL") |>
   ggplot(aes(TIME_PERIOD,values, color=sex)) + geom_line() + 
   facet_wrap(~ geo, nrow = 3, ncol = 3, scales = "free")
 ```
+We display the trend of income level for different age category across country.
 ```{r}
 ilc_di03_filter|>filter(sex=="T")|>
   filter(geo%in%c("BE","FR","DE","SE","NL","IT","FI","PT","ES")) |>
@@ -283,8 +269,6 @@ ilc_di03_filter|>filter(sex=="T")|>
   ggplot(aes(TIME_PERIOD,values, color=age)) + geom_line() + 
   facet_wrap(~ geo, nrow = 3, ncol = 3, scales = "free")
 ```
-
-
 
 #### ilc_iw16
 
@@ -300,14 +284,14 @@ ilc_iw16_filter = ilc_iw16 |>
     TRUE ~ c_birth ))
 
 summary_ilc_iwl6 <- ilc_iw16_filter|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
+  summarise(rows = n(),.by=c('geo','c_birth'))
 
 ```
-After filters, `urb_cpopcb` has `{r}nrow(ilc_iw16_filter)` rows, and `{r}ncol(ilc_iw16_filter)` columns.
 
-We display xxx as below.
-the figure is the average income group by countries, country of birth and sex
+After filters, `ilc_iw16` has `r NROW(ilc_iw16_filter)` rows, and `r NCOL(ilc_iw16_filter)` columns.
+
+We display the figures as below.
+The figure is the at-risk-of-poverty rate grouped by country of birth, across different countries.
 
 ```{r}
 ilc_iw16_filter |> filter(age=='Y_GE18', sex=='T', c_birth!='NAT') |>  
@@ -315,6 +299,7 @@ ilc_iw16_filter |> filter(age=='Y_GE18', sex=='T', c_birth!='NAT') |>
   ggplot(aes(TIME_PERIOD,values, color=c_birth)) + geom_line() + 
   facet_wrap(~ geo, nrow = 3, ncol = 3, scales = "free")
 ```
+The figure is the at-risk-of-poverty rate grouped by sex, across different countries.
 ```{r}
 ilc_iw16_filter |> filter(age=='Y_GE18', c_birth=='FOR') |>  
   filter(geo%in%c("BE","FR","DE","SE","NL","IT","FI","PT","ES")) |>
@@ -322,19 +307,11 @@ ilc_iw16_filter |> filter(age=='Y_GE18', c_birth=='FOR') |>
   facet_wrap(~ geo, nrow = 3, ncol = 3, scales = "free")
 ```
 
-
-#### ilc_peps06
-
-```{r}
-
-summary_ilc_peps06 <- ilc_peps06 |> 
-  filter(geo%in%countries)|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
-print(summary_ilc_peps06)
-
-```
 #### ilc_lvps16
+
+Distribution of population by group of country of birth and tenure status.
+
+We conduct similar operation on the table.
 
 ```{r}
 ilc_lvps16_filter = ilc_lvps16 |> 
@@ -346,18 +323,18 @@ ilc_lvps16_filter = ilc_lvps16 |>
 
 summary_ilc_lvps16 <- ilc_lvps16_filter |> 
   filter(geo%in%countries)|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
+  summarise(rows = n(),.by=c('geo','c_birth'))
 
 ```
 
+The figure is the ratio of house own(rent) for immigrants by countries.
 
 ```{r}
 
-ilc_lvps16_filter |> filter(age=="Y_GE18",sex=="T",c_birth%in%c('EU_FOR','NEU_FOR')) |>
+ilc_lvps16_filter |> filter(age=="Y_GE18",sex=="T",c_birth%in%c('FOR')) |>
   filter(geo%in%c("BE","FR","DE","SE","NL","IT","FI","PT","ES")) |> 
-  ggplot(aes(TIME_PERIOD,values,color=interaction(tenure,c_birth)))+
-  geom_line()+facet_wrap(~geo, nrow = 3, ncol = 3, scales = "free")
+  ggplot(aes(TIME_PERIOD,values,color=tenure))+
+  geom_bar(stat = 'identity')+facet_wrap(~geo, nrow = 3, ncol = 3, scales = "free")
 
 
 ```
@@ -376,7 +353,8 @@ summary_edat_lfs_9912 <- edat_lfs_9912_filter |>
   group_by(geo,c_birth) |>
   summarise(rows = n())
 ```
-After filters, `urb_cpopcb` has `{r}nrow(edat_lfs_9912_filter)` rows, and `{r}ncol(edat_lfs_9912_filter)` columns.
+
+After filters, `urb_cpopcb` has `r NROW(edat_lfs_9912_filter)` rows, and `r NCOL(edat_lfs_9912_filter)` columns.
 
 
 For simplicity, we display the education attainment level for immigrants (EU foreigner and NEU foreigner) of France.
@@ -388,56 +366,53 @@ edat_lfs_9912_filter |> filter(geo=='FR',age=='Y18-64',sex=='T') |>
   facet_wrap(~ c_birth)
 
 ```
-#### lfsa_pfgacedm
 
-```{r}
-
-summary_lfsa_pfgacedm <- lfsa_pfgacedm |> 
-  filter(geo%in%countries)|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
-print(summary_lfsa_pfgacedm)
-
-```
-
-#### lfst_r_eredcobu
-
-```{r}
-summary_lfst_r_eredcobu <- lfst_r_eredcobu |> 
-  filter(geo%in%countries)|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
-print(summary_lfst_r_eredcobu)
-
-```
 #### demo_pjangroup
 
+It is the table of Population.
+We extract EU countries, and display the population trend by sex and countries as below.
 ```{r}
-summary_demo_pjangroup <- demo_pjangroup |> 
-  filter(geo%in%countries)|>
-  group_by(geo) |>
-  summarise(rows = n())
-print(summary_demo_pjangroup)
+demo_pjangroup_filter = demo_pjangroup |> filter(geo%in%countries,sex!="T", age=="TOTAL")
+summary_demo_pjangroup <- demo_pjangroup_filter |> 
+  summarise(rows = n(),.by=geo)
 
+```
+
+`demo_pjangroup` has `r NROW(demo_pjangroup_filter)` rows and `r NCOL(demo_pjangroup_filter)` columns.
+
+```{r}
+demo_pjangroup_filter |> 
+  filter(geo%in%c("BE","FR","DE","SE","NL","IT","FI","PT","ES")) |> 
+  ggplot(aes(TIME_PERIOD,values,color=sex))+
+  geom_line()+facet_wrap(~geo,scales = "free")
 ```
 
 #### migr_imm8
 
+It is the table of Population of immigrants.
+
+We display the trend of immigrants by sex as below.
 ```{r}
+migr_imm8_filter = migr_imm8|> filter(geo%in%countries,agedef=="COMPLET",age=="TOTAL")
+summary_migr_imm8 <- migr_imm8_filter |> 
+  summarise(rows = n(),.by=geo)
 
-summary_migr_imm8 <- migr_imm8 |> 
-  filter(geo%in%countries)|>
-  group_by(geo) |>
-  summarise(rows = n())
-print(summary_migr_imm8)
+```
 
+`migr_imm8` has `r NROW(migr_imm8_filter)` rows and `r NCOL(migr_imm8_filter)` columns.
+
+```{r}
+migr_imm8_filter|> filter(sex!="T")|>
+  filter(geo%in%c("BE","FR","DE","SE","NL","IT","FI","PT","ES")) |> 
+  ggplot(aes(TIME_PERIOD,values,color=sex))+geom_line()+facet_wrap(~geo,scales="free")
 ```
 
 
 ## Research Question
 
 ### Question 1
-1. Does the scale of immigration influence the income of immigrants? To what extent does the immigration affect the economy of targeted countries?
+
+Does the scale of immigration influence the income of immigrants? To what extent does the immigration affect the economy of targeted countries?
 
 With the first part of research, we can identify the concentration effect of immigrants on themselves. More precisely, whether the concentration of immigrants improve or decrease the welfare of immigrants.
 
@@ -456,7 +431,7 @@ To examine the validity of regression we implement Granger Causality Tests in th
 
 ### Question 2
 
-2. What factors within immigrant group decide their income? Compared to the native population, what are differences of these effects? What can we conclude from these differences on the mechanism of immigration impact on the economy of targeted countries?
+What factors within immigrant group decide their income? Compared to the native population, what are differences of these effects? What can we conclude from these differences on the mechanism of immigration impact on the economy of targeted countries?
 
 In this question, we study the key determinants of income of immigrant group, incorporating comparative analysis with natives and temporal dynamics of these determinants. For example, how do the effects of factors like education and urbanization on income level differ for immigrants versus the native population? Are there any difference for immigrants from EU countries and non-EU countries? Moreover, we can find from this question we can find how has the demographic structure of immigrants evolved during the last 20 years.
 
@@ -467,42 +442,32 @@ Similar to the first question, we adopt Granger Causality Tests in the time seri
 
 ## Introduce the variable
 
-In this section we introduce some important variables.
+In this section we introduce some important variables, and explain our process of constructing our regression panel. Our operation include data joining, aggregating, and so on.
 
 ### Panel A
 
 `geo` indicates European country/region. Which country/region the abbreviations refer to can be consulted on Eurostat.
 
-`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to seperately study the interior flexibility of EU citizens and the population influx from outside EU.
+`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to seperatly study the interior flexibility of EU citizens and the population influx from outside EU.
 
 `Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
 
-High education?
+`High education`: the ratio of immigrants attaining high education to the overall number.
 
 `immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
 
 
+PanelA: the first research question, consist of four 4 table
 
-## Clean the data
-
-we clean our data set in this part.
-
-
-
-
-## Data Join
-
-### PanelA
-
-PanelA: first research question, consist of four 4 table
-
-- tableA: mean income data, measured by Purchasing power standard, extracting all sex, all age, country of birth in EU or nonEU(considering the EU is changing overall, we use  `ifelse` to assign a fixed label), geo from EU countries.
+- tableA: mean income data for immigrants, measured by Purchasing power standard, extracting all sex, all age, country of birth in EU or nonEU(considering the EU is changing overall, we use  `ifelse` to assign a fixed label), geo from EU countries.
 
 - tableB: immigration number data, measured by number, extracting all sex, all age, complete age definition, geo from EU countries.
 
-- tableC: education component data, measure by ratio(the ratio of the number of a specific education level immigrants to all imigrants). We extract all sex, all deg_urb, country of birth in EU or nonEU, geo from EU countries, and isced11 of ED5-8(Tertiary education). The main value is the ratio of Tertiary education immigrants to all immigrants in the same group.
+- tableC: education component data, measure by ratio(the ratio of the number of a specific education level immigrants to all immigrants). We extract all sex, country of birth in EU or nonEU, geo from EU countries, and isced11 of ED5-8(Tertiary education). The main value is the ratio of Tertiary education immigrants to all immigrants in the same group.
 
 - tableD: number of population, we extract geo and TIME_PERIOD level data.
+
+- tableE: mean income data for domestic, we extract geo and TIME_PERIOD level data.
 
 Hence the Panel consists of several variables, geo, c_birth, TIME_PERIOD, Mean_income, Immigration_num, Highedu_ratio, Pop_num, and we compute a new variable `Imigration_ratio`, the ratio of Immigration to Total Population.
 
@@ -519,7 +484,7 @@ A = A |> mutate( c_birth=ifelse(c_birth%in%birth_eu, "EU_FOR",
 B = migr_imm8|>filter((age=='TOTAL')&(sex=='T')&(agedef=='COMPLET')&(geo%in%countries)) |>
     mutate(Immigration_num=values) |> select(geo,TIME_PERIOD,Immigration_num)
 
-C = edat_lfs_9915 |> filter((sex=="T")&(deg_urb=="TOTAL")&(geo%in%countries)&(isced11=="ED5-8")&
+C = edat_lfs_9912 |> filter((sex=="T")&(geo%in%countries)&(isced11=="ED5-8")&
     (age=='Y15-64')&(c_birth%in%birth_neu | c_birth%in%birth_eu)) |> 
     mutate(Highedu_ratio=values)|>select(geo,c_birth,TIME_PERIOD,Highedu_ratio)
 C = C |> mutate( c_birth=ifelse(c_birth%in%birth_eu, "EU_FOR", 
@@ -541,43 +506,86 @@ panelA = panelA |> select(geo,c_birth,TIME_PERIOD,Mean_income_FOR,Mean_income_NA
 panelA
 ```
 
-PanelA has `{r}nrow(panelA)` rows and `{r} ncol(panelA)`.
+PanelA has `r NROW(panelA)` rows and `r NCOL(panelA)`.
+
+We plot the scatter chart of `Imigration_ratio` and `Mean_income_FOR`as below.
+
+We can see a roughly postive relation between `Imigration_ratio` and `Mean_income_FOR`, across all EU contries, no matter born in EU or nonEU.
+
+Note that it's just a basic display, which cannot lead to final conclusion. Strictly, we should control the income level of domestic.
 
 ```{r}
-panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR))+geom_point()
+panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR,color=geo))+geom_point()
 ```
+```{r}
+panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR,color=geo))+geom_point()+
+  facet_wrap(~c_birth)
+```
+
+
 ## PanelB
 
 we only consider people aged between 18 and 64, which is regarded as labor age.
 
-F:
+PanelB: the second research question, consist of four 4 table
+
+- tableF: mean income data for immigrants, measured by Purchasing power standard, extracting sex(Male and Female), age between 18 and 64, country of birth in EU or nonEU(considering the EU is changing overall, we use  `ifelse` to assign a fixed label), geo from EU countries.
+
+- tableG: education component data, measure by ratio(the ratio of the number of a specific education level immigrants to all imigrants). We extract sex of male and female, country of birth in EU or nonEU, geo from EU countries, and isced11 of ED0-2, ED3-4, and ED5-8(Tertiary education). We use `pivot_wider` to transfer isced11 into columns.
+
+- tableH: mean income data for domestic, measured by Purchasing power standard, extracting sex(Male and Female), age between 18 and 64.
+
+- tableI: number of immigrants, we extract sex of males and female, age between 18 and 64, geo of EU countries and TIME_PERIOD level data, and we aggregate the sum of immigrants grouped by sex, geo, and TIME_PERIOD.
+
+- tableJ: number of population, we extract sex of total, age between 15 and 64(because there is no field starting from 18, we use 15 as complement), geo of EU countries and TIME_PERIOD level data, and we aggregate the sum of immigrants grouped by geo, and TIME_PERIOD.
+
+Hence the Panel consists of several variables, `geo`, `c_birth`, `TIME_PERIOD`, `Income_FOR`, `Immigration_num`, `ED0-2`, `ED3_4`, `ED5-8`, `Pop_num`, `Income_Dom`, and we compute a new variable `Imigration_ratio`, the ratio of Immigration to Total Population.
 
 ```{r}
 F = ilc_di16 |> filter(geo%in%countries,unit=='PPS',age=='Y18-64',
                        indic_il=='MEI_E',sex!='T')|>
-  mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
-    c_birth %in% birth_neu ~ "NEU_FOR",TRUE ~ c_birth ))|>
-  filter(c_birth%in%c('EU_FOR','NEU_FOR')) |>
-  mutate(Mean_income_FOR=values) |>
-  select(sex,geo,c_birth,TIME_PERIOD,Mean_income_FOR)
+    mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
+      c_birth %in% birth_neu ~ "NEU_FOR",TRUE ~ c_birth ))|>
+    filter(c_birth%in%c('EU_FOR','NEU_FOR')) |>
+    mutate(Income_FOR=values) |>
+    select(sex,geo,c_birth,TIME_PERIOD,Income_FOR)
 
+G = edat_lfs_9912|>filter(age=="Y18-64",geo%in%countries,) |>
+    filter(isced11%in%c("ED0-2","ED3_4","ED5-8")) |>
+    mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
+      c_birth %in% birth_neu ~ "NEU_FOR",TRUE ~ c_birth ))|>
+    filter(c_birth%in%c('EU_FOR','NEU_FOR')) |> 
+    pivot_wider(names_from = isced11, values_from = values) |>
+    select(sex,c_birth,geo,TIME_PERIOD,`ED0-2`,`ED3_4`,`ED5-8`)
+
+H = ilc_di03 |> filter(geo%in%countries,unit=='PPS',age=='Y18-64',
+        indic_il=='MEI_E',sex!='T') |>
+    mutate(Income_Dom=values) |>
+    select(sex,geo,TIME_PERIOD,Income_Dom)
+
+I = migr_imm8 |> filter(sex!="T",agedef=='COMPLET') |> 
+  filter(age%in%paste0("Y", 18:64),geo%in%countries) |>
+  summarise(Immigration_num=sum(values),.by=c("geo","sex","TIME_PERIOD"))
+
+J = demo_pjangroup |> filter(sex=='T',geo%in%countries,) |>
+  filter(age%in%c("Y15-19","Y20-24","Y25-29","Y30-34","Y35-39",
+                  "Y40-44","Y45-49","Y50-54","Y55-59","Y60-64")) |>
+  summarise(Pop_num=sum(values),.by=c("geo","TIME_PERIOD"))
+
+panelB = F |> inner_join(G, by = c("sex","c_birth","geo","TIME_PERIOD")) |>
+              inner_join(H, by = c("sex","geo","TIME_PERIOD")) |>
+              inner_join(I, by = c("geo","sex","TIME_PERIOD")) |>
+              inner_join(J, by = c("geo","TIME_PERIOD"))|> 
+        mutate(Imigration_ratio=Immigration_num/Pop_num)
+panelB
 ```
 
+After a series of operation, we get other panel for the second question. 
+
+`panelB` has `r NROW(panelB)` rows and `r NCOL(panelB)` columns.
 
 
-```{r}
-edat_lfs_9912|>filter(age=="Y18-64",geo%in%countries,) |>
-  filter(isced11%in%c("ED0-2","ED3_4","ED5-8")) |>
-  mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
-    c_birth %in% birth_neu ~ "NEU_FOR",TRUE ~ c_birth ))|>
-  filter(c_birth%in%c('EU_FOR','NEU_FOR')) |> 
-  pivot_wider(names_from = isced11, values_from = values)
-```
-
-lfst_r_eredcobu,edat_lfs_9915
-```{r}
-edat_lfs_9912 |> distinct(isced11)
-```
+### Further Analysis
 
 
 
