@@ -205,7 +205,7 @@ print(summary_table)
 
 ### urb_cpopcb
 
-Considering there are too many cities, we only consider country-level data, so we extract the country field in `cities`. For `indic_ur`(urban audit indicator), we extract rows of `DE2002V`(EU foreigners) and `DE2002V`(Non-EU foreigners), as these are two types of immigrants we desire to research. We extract our desired table and display some statistic characteristic as below.
+For simplicity, we only consider country-level data(instead of city-level data, which is scarce for each city), so we extract the country field in `cities`. For `indic_ur`(urban audit indicator), we extract rows of `DE2002V`(EU foreigners) and `DE2002V`(Non-EU foreigners), as these are two types of immigrants we desire to research. We extract our desired table and display some statistic characteristic as below.
 
 ```{r}
 urb_cpopcb_filter = urb_cpopcb |>
@@ -215,7 +215,7 @@ summary_urb_cpopcb <-  urb_cpopcb_filter|>
   summarise(rows = n(),.by = c("indic_ur","cities"))
 ```
 
-After filters, `urb_cpopcb` has `r NROW(urb_cpopcb_filter)` rows, and `r NCOL(urb_cpopcb_filter)` columns.
+After filtering, `urb_cpopcb` has `r NROW(urb_cpopcb_filter)` rows, and `r NCOL(urb_cpopcb_filter)` columns.
 
 We display the number of valid data for each EU country. The distribution is not even, with some country having just 1 or 2 data sample, such as PL(Poland).
 ```{r}
@@ -237,7 +237,7 @@ urb_cpopcb_filter |> filter(cities%in%c("BE","FR","DE","SE","NL","IT","FI","PT",
 
 ### ilc_di16
 
-It is table of Mean and median income by group of country of birth.
+This is a table of Mean and median income by group of country of birth.
 Similarly, we extract our desired fields. For countries, (Note that now it's in `geo` column), we do it as above. For unit of measure, we adopt the `PPS`(Purchasing power standard), which is a more reasonable indicator compared with Euro (getting rid of money supply, inflation, etc.). For `indic_il`(income and living condition indicators), we choose `MEI_E`(Mean equivalised net income).
 
 For the `c_birth`, as we illustrate before, the member of EU is changing, so we need to harmonise the calibre of statistics. We assign `EU_FOR` and `NEU_FOR` for both two categories.
@@ -254,9 +254,8 @@ summary_ilc_dil6 <- ilc_di16_filter|>
   summarise(rows = n(),.by=c('geo','c_birth'))
 
 ```
-<<<<<<< HEAD
 
-After filters, `ilc_di16` has `r NROW(ilc_di16_filter)` rows, and `r NCOL(ilc_di16_filter)` columns.
+After filtering, `ilc_di16` has `r NROW(ilc_di16_filter)` rows, and `r NCOL(ilc_di16_filter)` columns.
 
 We display the figure as below. Similarly, we only show some of the countries.
 After filtering, `ilc_di16_filter` has `r nrow(ilc_di16_filter)` rows, and `r ncol(ilc_di16_filter)` columns.
@@ -281,7 +280,7 @@ We conduct the similar filter operation on the table.
 ilc_di03_filter = ilc_di03 |> filter(unit=='PPS',geo%in%countries,indic_il=='MEI_E')
 ```
 
-After filters, `ilc_di03` has `r NROW(ilc_di03_filter)` rows, and `r NCOL(ilc_di03_filter)` columns.
+After filtering, `ilc_di03` has `r NROW(ilc_di03_filter)` rows, and `r NCOL(ilc_di03_filter)` columns.
 
 
 We display the trend of income level for different genders across country.
@@ -300,7 +299,7 @@ ilc_di03_filter|>filter(sex=="T")|>
   facet_wrap(~ geo, nrow = 3, ncol = 3, scales = "free")
 ```
 
-#### ilc_iw16
+### ilc_iw16
 
 It's the table of In-work at-risk-of-poverty rate by group of country of birth(population aged 18 and over). We conduct similar operation on this table (filter countries, assign new value to c_birth). 
 
@@ -319,7 +318,7 @@ summary_ilc_iwl6 <- ilc_iw16_filter|>
 ```
 <<<<<<< HEAD
 
-After filters, `ilc_iw16` has `r NROW(ilc_iw16_filter)` rows, and `r NCOL(ilc_iw16_filter)` columns.
+After filtering, `ilc_iw16` has `r NROW(ilc_iw16_filter)` rows, and `r NCOL(ilc_iw16_filter)` columns.
 
 We display the figures as below.
 The figure is the at-risk-of-poverty rate grouped by country of birth, across different countries.
@@ -341,7 +340,7 @@ ilc_iw16_filter |> filter(age=='Y_GE18', c_birth=='FOR') |>
 ```
 
 
-#### ilc_lvps16
+### ilc_lvps16
 
 ```{r}
 
@@ -408,7 +407,7 @@ summary_edat_lfs_9912 <- edat_lfs_9912_filter |>
   summarise(rows = n())
 ```
 
-After filters, `urb_cpopcb` has `r NROW(edat_lfs_9912_filter)` rows, and `r NCOL(edat_lfs_9912_filter)` columns.
+After filtering, `urb_cpopcb` has `r NROW(edat_lfs_9912_filter)` rows, and `r NCOL(edat_lfs_9912_filter)` columns.
 
 
 For simplicity, we display the education attainment level for immigrants (EU foreigner and NEU foreigner) of France.
@@ -422,7 +421,7 @@ edat_lfs_9912_filter |> filter(geo=='FR',age=='Y18-64',sex=='T') |>
 ```
 
 
-#### demo_pjangroup
+### demo_pjangroup
 
 It is the table of Population.
 We extract EU countries, and display the population trend by sex and countries as below.
@@ -442,7 +441,7 @@ demo_pjangroup_filter |>
   geom_line()+facet_wrap(~geo,scales = "free")
 ```
 
-#### migr_imm8
+### migr_imm8
 
 It is the table of Population of immigrants.
 
@@ -495,46 +494,11 @@ To examine the validity of regression we implement Granger Causality Tests in th
 
 What factors within immigrant group decide their income? Compared to the native population, what are differences of these effects? What can we conclude from these differences on the mechanism of immigration impact on the economy of targeted countries?
 
-In this question, we study the key determinants of income of immigrant group, incorporating comparative analysis with natives and temporal dynamics of these determinants. For example, how do the effects of factors like education and urbanization on income level differ for immigrants versus the native population? Are there any difference for immigrants from EU countries and non-EU countries? Moreover, we can find from this question we can find how has the demographic structure of immigrants evolved during the last 20 years.
+In this question, we study the key determinants of income of immigrant group, incorporating comparative analysis with natives and temporal dynamics of these determinants. For example, how do the effects of factors like education and urbanization on income level differ for immigrants versus the native population? Are there any difference for immigrants from EU countries and non-EU countries? Moreover, we can find from this question how has the demographic structure of immigrants evolved during the last 20 years.
 
-In this part, we take the employment rate as independent variable, using education/ages/sex/degree of urbanization/wage of the natives as regressors, and the immigration scale as a controlled variable. All these data are collected over time. 
+In this part, we take the employment rate as independent variable, using education/sex/domestic wage as regressors, and the immigration scale as a controlled variable. All these data are collected over time. 
 
 Similar to the first question, we adopt Granger Causality Tests in the time series context, which test for the directional causality between immigration and economic changes.
-
-
-## Introduce the variable
-
-In this section we introduce some important variables, and explain our process of constructing our regression panel. Our operation include data joining, aggregating, and so on.
-
-### Panel A
-
-`geo` indicates European country/region. Which country/region the abbreviations refer to can be consulted on Eurostat.
-
-`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to seperatly study the interior flexibility of EU citizens and the population influx from outside EU.
-
-`Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
-
-`High education`: the ratio of immigrants attaining high education to the overall number.
-
-`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
-
-
-PanelA: the first research question, consist of four 4 table
-
-- tableA: mean income data for immigrants, measured by Purchasing power standard, extracting all sex, all age, country of birth in EU or nonEU(considering the EU is changing overall, we use  `ifelse` to assign a fixed label), geo from EU countries.
-
-`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to separately study the interior flexibility of EU citizens and the population influx from outside EU.
-`EU_FOR` represents those immigrants whose countries of birth are EU countries;
-`NEU_FOR` represents those immigrants whose countries of birth are Non-EU countries.
-
-`Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
-
-High education ratio represents the proportion of population whose education level is `ED5-8`, which is a relatively high education level. 
-
-`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
-
-### Panel B
-
 
 
 ## Data Cleaning and Joining
@@ -546,7 +510,6 @@ Corresponding to two research questions, we design two data panels. In this part
 PanelA: first research question, consist of four 4 table
 
 - tableA: mean income data, measured by Purchasing power standard, extracting all sex, all age, country of birth in EU or nonEU(considering the EU is changing overall, we use  `ifelse` to assign a fixed label), geo from EU countries.
->>>>>>> 302fb3c77e76ee3db9209adf353ee1cec7706204
 
 - tableB: immigration number data, measured by number, extracting all sex, all age, complete age definition, geo from EU countries.
 
@@ -614,11 +577,11 @@ panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR,color=geo))+geom_point()+
 ```
 
 
-## PanelB
+### PanelB
 
 we only consider people aged between 18 and 64, which is regarded as labor age.
 
-PanelB: the second research question, consist of four 4 table
+PanelB: the second research question, consist of four 5 table
 
 - tableF: mean income data for immigrants, measured by Purchasing power standard, extracting sex(Male and Female), age between 18 and 64, country of birth in EU or nonEU(considering the EU is changing overall, we use  `ifelse` to assign a fixed label), geo from EU countries.
 
@@ -675,8 +638,60 @@ After a series of operation, we get other panel for the second question.
 
 `panelB` has `r NROW(panelB)` rows and `r NCOL(panelB)` columns.
 
+## Introduce the variable
 
-### Further Analysis
+In this section we introduce some important variables, and explain our process of constructing our regression panel. Our operation include data joining, aggregating, and so on.
+
+### Panel A
+
+Panel A is designed for the first research question, consist of four 4 table
+
+`geo` indicates European country/region. Which country/region the abbreviations refer to can be consulted on Eurostat.
+
+`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to separatly study the interior flexibility of EU citizens and the population influx from outside EU.
+
+`Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
+
+`High education`: the ratio of immigrants attaining high education to the overall number.
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
+
+### Panel B
+
+Panel B is designed for the second research question, consist of 5 tables.
+
+Similar to panel A, `geo` indicates European country/region. `c_birth` is also similar.
+
+Column `Income_FOR` is the variable of foreigners' income, `Income_Dom` is natives' income. We introduce the latter to control the effect of targeted countries economic prosperity.
+
+In this panel we adopt more detailed divisions by education level.
+
+`ED0-2`, `ED3-4`,`ED5-8` are indicators of education level, `ED0-2` represents relatively low education level,(e.g.elementary school), `ED3-4` represents intermediate level(e.g. High school degree),`ED5-8` represents relatively high education level(university degree or equivalent).
+
+`Income_Dom` is the newly introduced control variable, our study can filter partly eliminate the simultaneity problem in regression.
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
+
+
+## Further Analysis
+
+When this document comes to an end, we should point out the possibility of extension of this study. In the two research questions, there are other potential variables that can be taken into account.
+
+### Additional Variables
+
+For example the tenant status of immigrants. But the effect of these variables are not obvious, we will try to incorporate these variables during the study, but might possibly find their correlation with other variables or irrelevance. Thus for the final result of this study, the mechanism or regression model can be modified.
+
+### Regional Analysis
+
+We notice that the data of the degree of urbanization is available on Eurostat, this could help us to uncover heterogeneities that a national-level analysis might obscure. Comparing metropolitan versus rural areas within countries to assess if urbanization intensifies or mitigates the effects of immigration on income.
+
+### Policy impact
+
+In modern states immigration is a subject highly influenced by related policy. European Union has adopted several policies on immigration problem, which somehow cause larger scale of refugee influx. We can particularly find the data just before or after the implementation of those policies and conduct Difference-in-Difference analysis to assess the impact of policy.
+
+
+By exploring these new dimensions, our study could evolve into a broader framework that not only addresses current research questions but also contributes to understanding of immigration's multifaceted impacts.
+
 
 
 
