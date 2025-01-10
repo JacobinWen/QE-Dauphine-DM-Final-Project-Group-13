@@ -7,6 +7,10 @@ format: html
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
+## Github Link
+
+https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13
+
 ## Prepare environment
 ```{r}
 library(here)
@@ -339,22 +343,6 @@ ilc_iw16_filter |> filter(age=='Y_GE18', c_birth=='FOR') |>
 ```
 
 
-### ilc_lvps16
-
-```{r}
-
-ilc_peps06_filter <- ilc_peps06 |> 
-  filter(geo%in%countries)
-
-summary_ilc_peps06 <- ilc_peps06 |> 
-  filter(geo%in%countries)|>
-  group_by(geo,c_birth) |>
-  summarise(rows = n())
-print(summary_ilc_peps06)
-
-```
-
-After filtering, `ilc_peps06_filter` has `r nrow(ilc_peps06_filter)` rows, and `r ncol(ilc_peps06_filter)` columns.
 
 ### ilc_lvps16
 
