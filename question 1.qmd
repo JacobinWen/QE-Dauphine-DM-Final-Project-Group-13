@@ -1,0 +1,41 @@
+---
+title: "Question1"
+author: "Puwen Wen"
+format: html
+editor: visual
+---
+
+## Model Set Up
+
+### Basic Model
+```{r}
+# Install and load plm package
+install.packages("plm")
+library(plm)
+
+# Panel data model
+model <- plm(Mean_income_FOR ~ Imigration_ratio + Mean_income_NAT,
+             data = panelA,
+             index = c("geo", "TIME_PERIOD"),
+             model = "within") # Fixed Effects
+summary(model)
+```
+### logarithimic transformation
+```{r}
+panelA$log_income_FOR <- log(panelA$Mean_income_FOR)
+panelA$log_Imigration_ratio <- log(panelA$Imigration_ratio)
+panelA$log_income_NAT <- log(panelA$Mean_income_NAT)
+model_refined <- plm(log_income_FOR ~ log_Imigration_ratio + log_income_NAT,
+                     data = panelA, index = c("geo", "TIME_PERIOD"), model = "within")
+summary(model_refined)
+```
+
+### income_ratio
+
+```{r}
+panelA$income_ratio <- panelA$Mean_income_FOR/panelA$Mean_income_NAT
+
+model_refined <- plm(income_ratio ~ Imigration_ratio,
+                     data = panelA, index = c("geo", "TIME_PERIOD"), model = "within")
+summary(model_refined)
+```
