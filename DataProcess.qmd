@@ -50,7 +50,6 @@ birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
 ```
 
 
-=======
 
 ## Describe the data
 
@@ -83,7 +82,7 @@ Fields: freq,unit,indic_il,c_birth,sex,age,geo
 Ranges: 2003-2023
 
 
-### ilc_lvps16:
+### ilc_lvps16
 
 Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_lvps16/default/table?lang=en&category=mi.mii.mii_soinc.mii_lc
 
@@ -96,7 +95,7 @@ Fields: freq,unit,tenure,c_birth,sex,age,geo
 Ranges: 2003-2024
 
 
-### edat_lfs_9912:
+### edat_lfs_9912
 
 
 Link: https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata
@@ -320,7 +319,7 @@ summary_ilc_iwl6 <- ilc_iw16_filter|>
   summarise(rows = n(),.by=c('geo','c_birth'))
 
 ```
-<<<<<<< HEAD
+
 
 After filtering, `ilc_iw16` has `r NROW(ilc_iw16_filter)` rows, and `r NCOL(ilc_iw16_filter)` columns.
 
@@ -558,7 +557,8 @@ PanelA has `r nrow(panelA)` rows and `r ncol(panelA)`.
 ```{r}
 panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR,color=geo))+geom_point()
 ```
-<<<<<<< HEAD
+
+
 ```{r}
 panelA |> ggplot(aes(Imigration_ratio,Mean_income_FOR,color=geo))+geom_point()+
   facet_wrap(~c_birth)
@@ -672,6 +672,62 @@ For example the tenant status of immigrants. But the effect of these variables a
 ### Regional Analysis
 
 We notice that the data of the degree of urbanization is available on Eurostat, this could help us to uncover heterogeneities that a national-level analysis might obscure. Comparing metropolitan versus rural areas within countries to assess if urbanization intensifies or mitigates the effects of immigration on income.
+
+#### Regression For Question2
+
+Consider Different Countries will have different level of income, to make it comparable, we adopt a relative measurement, which is the ratio of `Income_FOR` to `Income_Dom`, defined as `Income_Rev`.
+Secondly, in the educational aspect, given the sum of `ED0-2`, `ED3_4` and `ED5-8` is always equal to 1, to avoid the multicolinearity, we choose two of them as our independent variables.
+Thirdly, for the sex variable, we take dummy variable, defined as 1 if `sex` is male, 0 if `sex` is female, denoted as `sex_onehot` 
+Fourthly, for the `c_birth` variable, we also use dummy variable, defined as 1 if `c_birth` is `EU_FOR` and 0 is `c_birth` is `NEU_FOR`.
+Fifthly, to ensure the data scale, we scale the Immigration_ratio by 100 times,define as `Imm_ratio`.
+Finnaly, considering the data may have time effect (trend), we add lag variable of `Income_Rev` and `Imm_ratio`.
+
+
+```{r}
+# panelB 
+panelB_reg = panelB |> mutate(Income_Rev=Income_FOR/Income_Dom,
+                              Imm_ratio=Imigration_ratio*100) |> 
+  mutate(Income_Rev_lag1=lag(Income_Rev, 1), Imm_ratio_lag1=lag(Imm_ratio,1)) |>
+  mutate(Income_Rev_lag2=lag(Income_Rev, 2), Imm_ratio_lag2=lag(Imm_ratio,2)) |>
+  filter(!is.na(Income_Rev_lag2),!is.na(Income_Rev_lag1),!is.na(Income_Rev),
+         !is.na(Imm_ratio),!is.na(Imm_ratio_lag1),!is.na(Imm_ratio_lag2),
+         !is.na(`ED5-8`),!is.na(ED3_4)) |>
+  mutate(`ED0-2`=100-`ED5-8`-ED3_4) |>
+  mutate(`ED0-2`=`ED0-2`/100,`ED5-8`=`ED5-8`/100)|>
+  mutate(sex_onehot=case_when(sex=='F'~0,sex=='M'~1)) |>
+  mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~0,c_birth=='EU_FOR'~1)) |>
+  mutate(sex_birth_onehot=sex_onehot*c_birth_onehot) |>
+  select(Income_Rev,Income_Rev_lag1,Income_Rev_lag2,sex_onehot,c_birth_onehot,
+         sex_birth_onehot,`ED0-2`,`ED5-8`,Imm_ratio,Imm_ratio_lag1,Imm_ratio_lag2)
+```
+
+We have a look at our regression panel.
+`panelB_reg` has `r NROW(panelB_reg)` rows and `r NCOL(panelB_reg)` columns.
+
+We display the distribution of Income_Rev. We can see that `Income_Rev` vary from 0.5 to 2. In some groups, the relative level of income is only half compared to native income, while some reaching 1.8.
+```{r}
+panelB_reg |> ggplot(aes(Income_Rev))+geom_density()
+```
+We propose some hypothesis before we run the regression.
+Hypothesis 1: the relative income level does not have gender effect.
+Hypothesis 2: the relative income level does not have differences for birth of immigrants (EU or NonEU)
+Hypothesis 3: the relative income level does not have education effect.
+Hypothesis 4: the relative income level does not have clustering effect. (more immigrants, more competition, lower income)
+
+We run our regression as below and display the basic summary result.
+```{r}
+modelB <- lm(Income_Rev~Income_Rev_lag1+Income_Rev_lag2+
+               sex_onehot+c_birth_onehot+sex_birth_onehot+
+               `ED0-2`+`ED5-8`+Imm_ratio+Imm_ratio_lag1+Imm_ratio_lag2,panelB_reg)
+summary(modelB)
+```
+From the regression table, we can see:
+1. Relative Income level has strong autocorrelation
+2. Relative Income level does not have significant gender effect, hence we could not reject hypothesis 1.
+3. Country of birth has significantly positive correlation with relative income level, indicating that immigrants who are born in EU country has higher relative income than those who come from NonEU country. Therefore, we can reject hypothesis 2.
+4. The fraction of immigrants within that group who receive low education is strongly negative correlated with relative income level. This shows that educational level will affect the income, which reject hypothesis 3.
+5. Immigration Ratio have insignificant negative effect on the relative income, which cannot reject hypothesis 4.
+
 
 ### Policy impact
 
