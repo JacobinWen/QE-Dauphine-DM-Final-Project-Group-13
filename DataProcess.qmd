@@ -685,7 +685,7 @@ Finnaly, considering the data may have time effect (trend), we add lag variable 
 
 ```{r}
 # panelB 
-panelB_reg = panelB |> mutate(Income_Rev=Income_FOR/Income_Dom,
+panelB_reg = panelB |> mutate(Income_Rev=(Income_FOR/Income_Dom),
                               Imm_ratio=Imigration_ratio*100) |> 
   mutate(Income_Rev_lag1=lag(Income_Rev, 1), Imm_ratio_lag1=lag(Imm_ratio,1)) |>
   mutate(Income_Rev_lag2=lag(Income_Rev, 2), Imm_ratio_lag2=lag(Imm_ratio,2)) |>
