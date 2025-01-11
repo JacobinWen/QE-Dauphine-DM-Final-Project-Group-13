@@ -9,7 +9,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 ## Github Link
 
-https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13
+[click here](https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13)
 
 ## Prepare environment
 ```{r}
@@ -37,7 +37,7 @@ demo_pjangroup <- suppressMessages(get_eurostat('demo_pjangroup', time_format = 
 ilc_di03 <- suppressMessages(get_eurostat('ilc_di03', time_format = "num", stringAsFactors = TRUE))
 ```
 
-`countries` is vector of all fields of EU contries.
+`countries` is vector of all fields of EU countries.
 
 `birth_eu` is vector of all fields of foreigners born in eu, given EU is changing overtime, we collect them together.
 
@@ -60,7 +60,7 @@ Notice: All the fields used in data files could be found in `DataDescription.qmd
 
 Title: Population by citizenship and country of birth - cities and greater cities.
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/urb_cpopcb/default/table?lang=en&category=mi.mii.mii_urb
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/urb_cpopcb/default/table?lang=en&category=mi.mii.mii_urb)
 
 Description: Contains population data classified by citizenship and country of birth for urban and metropolitan areas, enabling demographic and migration trend analyses.
 
@@ -73,7 +73,7 @@ Ranges: 1990-2024
 
 Title: Mean and median income by group of country of birth (population aged 18 and over).
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/ilc_di16/default/table?lang=en&category=mi.mii.mii_soinc.mii_ip)
 
 Description: Similar to ilc_di15 but focuses on grouping by country of birth, highlighting income disparities among native-born and foreign-born populations.
 
@@ -84,7 +84,7 @@ Ranges: 2003-2023
 
 ### ilc_lvps16
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_lvps16/default/table?lang=en&category=mi.mii.mii_soinc.mii_lc
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/ilc_lvps16/default/table?lang=en&category=mi.mii.mii_soinc.mii_lc)
 
 Title: Distribution of population by group of country of birth and tenure status (population aged 18 and over).
 
@@ -98,7 +98,7 @@ Ranges: 2003-2024
 ### edat_lfs_9912
 
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/edat_lfs_9912/default/table?lang=en&category=mi.mii.mii_educ.mii_edata)
 
 Title: Population by educational attainment level, sex, age, and country of birth (%).
 
@@ -110,7 +110,7 @@ Ranges: 2004-2023
 
 ### migr_imm8
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/migr_imm8$defaultview/default/table?lang=en
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/migr_imm8$defaultview/default/table?lang=en)
 
 Title: Immigration by age and sex
 
@@ -120,7 +120,7 @@ Ranges: 1990-2022
 
 ### demo_pjangroup
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/demo_pjangroup$defaultview/default/table?lang=en
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/demo_pjangroup$defaultview/default/table?lang=en)
 
 Title: Population on 1 January by age group and sex
 
@@ -131,7 +131,7 @@ Ranges: 1960-2023
 
 ### ilc_di03
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/ilc_di03$defaultview/default/table?lang=en
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/ilc_di03$defaultview/default/table?lang=en)
 
 Title: Mean and median income by age and sex
 
@@ -142,7 +142,7 @@ Ranges: 1995-2023
 
 ### demo_pjangroup
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/demo_pjangroup$defaultview/default/table?lang=en
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/demo_pjangroup$defaultview/default/table?lang=en)
 
 Title: Population on 1 January by age group and sex
 
@@ -153,7 +153,7 @@ Ranges: 1960-2023
 
 ### migr_imm8
 
-Link: https://ec.europa.eu/eurostat/databrowser/view/migr_imm8$defaultview/default/table?lang=en
+Link: [Link to the data](https://ec.europa.eu/eurostat/databrowser/view/migr_imm8$defaultview/default/table?lang=en)
 
 Title: Immigration by age and sex
 
@@ -675,20 +675,33 @@ We notice that the data of the degree of urbanization is available on Eurostat, 
 
 #### Regression For Question2
 
-Consider Different Countries will have different level of income, to make it comparable, we adopt a relative measurement, which is the ratio of `Income_FOR` to `Income_Dom`, defined as `Income_Rev`.
-Secondly, in the educational aspect, given the sum of `ED0-2`, `ED3_4` and `ED5-8` is always equal to 1, to avoid the multicolinearity, we choose two of them as our independent variables.
-Thirdly, for the sex variable, we take dummy variable, defined as 1 if `sex` is male, 0 if `sex` is female, denoted as `sex_onehot` 
-Fourthly, for the `c_birth` variable, we also use dummy variable, defined as 1 if `c_birth` is `EU_FOR` and 0 is `c_birth` is `NEU_FOR`.
-Fifthly, to ensure the data scale, we scale the Immigration_ratio by 100 times,define as `Imm_ratio`.
-Finnaly, considering the data may have time effect (trend), we add lag variable of `Income_Rev` and `Imm_ratio`.
+To account for differences in income levels across countries, we adopt a relative measurement defined as the ratio of immigrant income `Income_FOR` to native income `Income_Dom`, referred to as `Income_Rev`.
+
+For the educational aspect, since the sum of `ED0-2`, `ED3_4` and `ED5-8` always equals 1, we exclude one category to avoid multicollinearity and use the remaining two as independent variables.
+
+For the sex variable, we create a dummy variable, denoted as `sex_onehot`, where 1 indicates male and 0 indicates female.
+
+Similarly, for the `c_birth` variable, we define a dummy variable, where 1 represents EU-born immigrants (EU_FOR) and 0 represents non-EU-born immigrants
+
+To ensure consistent data scaling, the `immigration_ratio` is multiplied by 100 and redefined as `Imm_ratio`.
+
+Finally, to account for potential time effects or trends, we include lagged variables for both `Income_Rev` and `Imm_ratio`.
+
+Overall, we exclude rows with null values from the dataset.
+```{r}
+panelB |> mutate(Income_Rev=Income_FOR/Income_Dom) |>
+  mutate(Income_Rev_lag1=lag(Income_Rev,1),.by=c("geo","sex","c_birth"))
+```
 
 
 ```{r}
 # panelB 
 panelB_reg = panelB |> mutate(Income_Rev=(Income_FOR/Income_Dom),
                               Imm_ratio=Imigration_ratio*100) |> 
-  mutate(Income_Rev_lag1=lag(Income_Rev, 1), Imm_ratio_lag1=lag(Imm_ratio,1)) |>
-  mutate(Income_Rev_lag2=lag(Income_Rev, 2), Imm_ratio_lag2=lag(Imm_ratio,2)) |>
+  mutate(Income_Rev_lag1=lag(Income_Rev, 1), 
+         Imm_ratio_lag1=lag(Imm_ratio,1),.by=c("geo","sex","c_birth")) |>
+  mutate(Income_Rev_lag2=lag(Income_Rev, 2), 
+         Imm_ratio_lag2=lag(Imm_ratio,2),.by=c("geo","sex","c_birth")) |>
   filter(!is.na(Income_Rev_lag2),!is.na(Income_Rev_lag1),!is.na(Income_Rev),
          !is.na(Imm_ratio),!is.na(Imm_ratio_lag1),!is.na(Imm_ratio_lag2),
          !is.na(`ED5-8`),!is.na(ED3_4)) |>
@@ -709,10 +722,14 @@ We display the distribution of Income_Rev. We can see that `Income_Rev` vary fro
 panelB_reg |> ggplot(aes(Income_Rev))+geom_density()
 ```
 We propose some hypothesis before we run the regression.
-Hypothesis 1: the relative income level does not have gender effect.
-Hypothesis 2: the relative income level does not have differences for birth of immigrants (EU or NonEU)
-Hypothesis 3: the relative income level does not have education effect.
-Hypothesis 4: the relative income level does not have clustering effect. (more immigrants, more competition, lower income)
+
+- Hypothesis 1: The relative income level is not influenced by gender.
+
+- Hypothesis 2: The relative income level does not vary based on the country of birth of immigrants (EU vs. Non-EU).
+
+- Hypothesis 3: The relative income level is not affected by education.
+
+- Hypothesis 4: The relative income level is not influenced by clustering effects (e.g., higher immigration leading to increased competition and lower income).
 
 We run our regression as below and display the basic summary result.
 ```{r}
@@ -721,12 +738,22 @@ modelB <- lm(Income_Rev~Income_Rev_lag1+Income_Rev_lag2+
                `ED0-2`+`ED5-8`+Imm_ratio+Imm_ratio_lag1+Imm_ratio_lag2,panelB_reg)
 summary(modelB)
 ```
-From the regression table, we can see:
-1. Relative Income level has strong autocorrelation
-2. Relative Income level does not have significant gender effect, hence we could not reject hypothesis 1.
-3. Country of birth has significantly positive correlation with relative income level, indicating that immigrants who are born in EU country has higher relative income than those who come from NonEU country. Therefore, we can reject hypothesis 2.
-4. The fraction of immigrants within that group who receive low education is strongly negative correlated with relative income level. This shows that educational level will affect the income, which reject hypothesis 3.
-5. Immigration Ratio have insignificant negative effect on the relative income, which cannot reject hypothesis 4.
+From the regression table, we observe the following:
+1. The relative income level exhibits strong autocorrelation.
+2. Gender does not have a significant effect on the relative income level; therefore, we cannot reject Hypothesis 1.
+3. The country of birth is significantly and positively correlated with the relative income level, indicating that immigrants born in EU countries have higher relative incomes than those from non-EU countries. Hence, we reject Hypothesis 2.
+4. A higher fraction of immigrants within a group receiving low education is strongly negatively correlated with the relative income level. This demonstrates that education significantly impacts income, leading us to reject Hypothesis 3.
+5. The immigration ratio has a significantly negative effect on relative income, meaning we can reject Hypothesis 4.
+
+Based on this result, we have some suggestions.
+
+- Since gender does not significantly affect relative income levels, this suggests that EU countries have made substantial progress in addressing gender inequality.
+
+- The positive correlation between EU-born immigrants and higher relative income levels indicates a potential disparity in economic opportunities between immigrants from EU and non-EU countries. Policies should focus on improving integration and access to opportunities for non-EU immigrants by offering tailored language training, skill development programs, and mentoring initiatives.
+
+- The significant negative correlation between low education levels and relative income indicates that individuals with low education earn well below the native average and are more likely to experience poverty. Policymakers should pay more attention to this group by providing greater access to educational opportunities. 
+
+- The insignificant but slightly negative effect of immigration ratios suggests that when immigrants are concentrated in one country, competition among them increases, potentially lowering their income. This implies that policymakers should carefully regulate the influx of immigrants, particularly illegal ones.
 
 
 ### Policy impact
