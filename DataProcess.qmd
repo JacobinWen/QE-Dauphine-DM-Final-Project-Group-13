@@ -9,7 +9,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 ## Github Link
 
-https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13
+[click here](https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13)
 
 ## Prepare environment
 ```{r}
@@ -37,7 +37,7 @@ demo_pjangroup <- suppressMessages(get_eurostat('demo_pjangroup', time_format = 
 ilc_di03 <- suppressMessages(get_eurostat('ilc_di03', time_format = "num", stringAsFactors = TRUE))
 ```
 
-`countries` is vector of all fields of EU contries.
+`countries` is vector of all fields of EU countries.
 
 `birth_eu` is vector of all fields of foreigners born in eu, given EU is changing overtime, we collect them together.
 
@@ -688,13 +688,20 @@ To ensure consistent data scaling, the `immigration_ratio` is multiplied by 100 
 Finally, to account for potential time effects or trends, we include lagged variables for both `Income_Rev` and `Imm_ratio`.
 
 Overall, we exclude rows with null values from the dataset.
+```{r}
+panelB |> mutate(Income_Rev=Income_FOR/Income_Dom) |>
+  mutate(Income_Rev_lag1=lag(Income_Rev,1),.by=c("geo","sex","c_birth"))
+```
+
 
 ```{r}
 # panelB 
 panelB_reg = panelB |> mutate(Income_Rev=Income_FOR/Income_Dom,
                               Imm_ratio=Imigration_ratio*100) |> 
-  mutate(Income_Rev_lag1=lag(Income_Rev, 1), Imm_ratio_lag1=lag(Imm_ratio,1)) |>
-  mutate(Income_Rev_lag2=lag(Income_Rev, 2), Imm_ratio_lag2=lag(Imm_ratio,2)) |>
+  mutate(Income_Rev_lag1=lag(Income_Rev, 1), 
+         Imm_ratio_lag1=lag(Imm_ratio,1),.by=c("geo","sex","c_birth")) |>
+  mutate(Income_Rev_lag2=lag(Income_Rev, 2), 
+         Imm_ratio_lag2=lag(Imm_ratio,2),.by=c("geo","sex","c_birth")) |>
   filter(!is.na(Income_Rev_lag2),!is.na(Income_Rev_lag1),!is.na(Income_Rev),
          !is.na(Imm_ratio),!is.na(Imm_ratio_lag1),!is.na(Imm_ratio_lag2),
          !is.na(`ED5-8`),!is.na(ED3_4)) |>
@@ -736,7 +743,7 @@ From the regression table, we observe the following:
 2. Gender does not have a significant effect on the relative income level; therefore, we cannot reject Hypothesis 1.
 3. The country of birth is significantly and positively correlated with the relative income level, indicating that immigrants born in EU countries have higher relative incomes than those from non-EU countries. Hence, we reject Hypothesis 2.
 4. A higher fraction of immigrants within a group receiving low education is strongly negatively correlated with the relative income level. This demonstrates that education significantly impacts income, leading us to reject Hypothesis 3.
-5. The immigration ratio has an insignificant negative effect on relative income, meaning we cannot reject Hypothesis 4.
+5. The immigration ratio has a significantly negative effect on relative income, meaning we can reject Hypothesis 4.
 
 Based on this result, we have some suggestions.
 
