@@ -13,6 +13,13 @@ library(ggplot2)
 library(plm)
 ```
 
+The link of this project to github:
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+cat("[View this project on GitHub]
+    (https://github.com/JacobinWen/QE-Dauphine-DM-Final-Project-Group-13)")
+```
+
 ```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 urb_cpopcb <- suppressMessages(get_eurostat('urb_cpopcb', time_format = "num", stringsAsFactors = TRUE))
 ilc_di16 <- suppressMessages(get_eurostat('ilc_di16', time_format = "num", stringAsFactors = TRUE))
