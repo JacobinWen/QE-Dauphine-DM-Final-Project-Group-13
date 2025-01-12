@@ -1,0 +1,398 @@
+---
+title: "Final Document"
+format: pdf
+---
+
+# Environment and data reading
+
+## Prepare environment
+```{r}
+library(here)
+library(vroom)
+library(tidyr)
+library(dplyr)
+library(eurostat)
+library(ggplot2)
+library(plm)
+```
+
+## Read Dataset
+```{r}
+urb_cpopcb <- suppressMessages(get_eurostat('urb_cpopcb', time_format = "num", stringsAsFactors = TRUE))
+ilc_di16 <- suppressMessages(get_eurostat('ilc_di16', time_format = "num", stringAsFactors = TRUE))
+ilc_iw16 <- suppressMessages(get_eurostat('ilc_iw16', time_format = "num", stringAsFactors = TRUE))
+ilc_peps06 <- suppressMessages(get_eurostat('ilc_peps06', time_format = "num", stringAsFactors = TRUE))
+ilc_lvps16 <- suppressMessages(get_eurostat('ilc_lvps16', time_format = "num", stringAsFactors = TRUE))
+edat_lfs_9912 <- suppressMessages(get_eurostat('edat_lfs_9912', time_format = "num", stringAsFactors = TRUE))
+lfsa_pfgacedm <- suppressMessages(get_eurostat('lfsa_pfgacedm', time_format = "num", stringAsFactors = TRUE))
+lfst_r_eredcobu <- suppressMessages(get_eurostat('lfst_r_eredcobu', time_format = "num", stringAsFactors = TRUE))
+edat_lfs_9915 <- suppressMessages(get_eurostat('edat_lfs_9915', time_format = "num", stringAsFactors = TRUE))
+migr_imm8 <- suppressMessages(get_eurostat('migr_imm8', time_format = "num", stringAsFactors = TRUE))
+demo_pjangroup <- suppressMessages(get_eurostat('demo_pjangroup', time_format = "num", stringAsFactors = TRUE))
+ilc_di03 <- suppressMessages(get_eurostat('ilc_di03', time_format = "num", stringAsFactors = TRUE))
+```
+
+```{r}
+countries = c("BE","BG","CZ","DK","DE","EE","IE","EL","ES","FR","IT","CY","LV","LT","LU","HU","MT","NL","AT","PL","PT","RO","SI","SK","FI","SE","NO","CH","UK")
+birth_eu = c("EU28_FOR","EU27_2007_FOR","EU27_2020_FOR")
+birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
+```
+
+# Research questions revisit
+
+In phase 2 we came up two research questions. After further data analysis and model fitting, there are several modifications on the questions. At the beginning of the final report, two questions are being re-presented, which guarantee a clear understanding of our research goal.
+
+## Question 1
+
+Does the scale of immigration influence the income of immigrants? To what extent does the immigration affect their economy of targeted countries?
+
+With the first part of research, we can identify the concentration effect of immigrants both  themselves and on the native citizens of targeted countries. More precisely, whether the concentration of immigrants improve or decrease the welfare of natives and immigrants.
+
+In the first question, we take the immigrant scale (foreign-born population as a proportion in total population) as independent variable, and the median/average income(measured by purchasing power standard) of immigrants as dependent variable.
+
+To more accurately capture the effect of immigrant concentration on their income, we implement a Difference-in-Difference regression, taking country of birth as treatment variable, and year 2015 as the dividing time point, with the background of an accute increase of non-eu immigrants during European refugee crisis.
+
+The data panel used in two parts of this question is the same. 
+
+## Question 2
+
+What factors within immigrant group decide their income? Compared to the native population, what are differences of these effects? What can we conclude from these differences on the mechanism of immigration impact on the economy of targeted countries?
+
+In this question, we study the key determinants of income of immigrant group, incorporating comparative analysis with natives and temporal dynamics of these determinants. For example, how do the effects of factors like education and urbanization on income level differ for immigrants versus the native population? Are there any difference for immigrants from EU countries and non-EU countries? Moreover, we can find from this question how has the demographic structure of immigrants evolved during the last 20 years.
+
+In this part, we take the employment rate as independent variable, using education/sex/domestic wage as regressors, and the immigration scale as a controlled variable. All these data are collected over time. 
+
+# Brief Data Description
+
+We designed two data panels based on the European Immigrants data from Eurostat for two research questions. Detailed descriptions of each raw datafram are in DataProcess.qmd document(for phase2).
+
+## Panel A
+
+Panel A is designed for the first research question, consist of four 4 table
+
+`geo` indicates European country/region. Which country/region the abbreviations refer to can be consulted on Eurostat.
+
+`c_birth` is a tag to distinguish foreigners born inside EU and those born outside EU, which allows us to separatly study the interior flexibility of EU citizens and the population influx from outside EU.
+
+`Mean_income` of foreigners is measured by purchasing power standard, instead of Euros.
+
+`High education`: the ratio of immigrants attaining high education to the overall number.
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`.
+
+```{r}
+
+A = ilc_di16 |> filter((sex=='T')&(age=='Y_GE18')&(c_birth%in%birth_neu | c_birth%in%birth_eu)&
+    (indic_il=='MEI_E')&(unit=='PPS')&(geo%in%countries)) |> mutate(Mean_income_FOR=values) |>
+    select(geo,c_birth,TIME_PERIOD,Mean_income_FOR)
+A = A |> mutate( c_birth=ifelse(c_birth%in%birth_eu, "EU_FOR", 
+             ifelse(c_birth%in%birth_neu, "NEU_FOR", "Other")))
+
+
+B = migr_imm8|>filter((age=='TOTAL')&(sex=='T')&(agedef=='COMPLET')&(geo%in%countries)) |>
+    mutate(Immigration_num=values) |> select(geo,TIME_PERIOD,Immigration_num)
+
+C = edat_lfs_9912 |> filter((sex=="T")&(geo%in%countries)&(isced11=="ED5-8")&
+    (age=='Y15-64')&(c_birth%in%birth_neu | c_birth%in%birth_eu)) |> 
+    mutate(Highedu_ratio=values)|>select(geo,c_birth,TIME_PERIOD,Highedu_ratio)
+C = C |> mutate( c_birth=ifelse(c_birth%in%birth_eu, "EU_FOR", 
+             ifelse(c_birth%in%birth_neu, "NEU_FOR", "Other")))
+
+D = demo_pjangroup |> filter((sex=='T')&(age=='TOTAL')&(geo%in%countries))|>mutate(Pop_num=values)|>
+  select(geo,TIME_PERIOD,Pop_num)
+
+E = ilc_di03|> filter((sex=="T")&(age=="Y_GE18")&(geo%in%countries)&(unit=="PPS")&(indic_il=="MEI_E"))|>
+  mutate(Mean_income_NAT = values)|>select(geo,TIME_PERIOD,Mean_income_NAT)
+
+
+panelA = A |> inner_join(B, by = c("geo","TIME_PERIOD")) |> 
+              inner_join(C, by = c("geo","TIME_PERIOD","c_birth")) |>
+              inner_join(D, by = c("geo","TIME_PERIOD")) |>
+              inner_join(E, by = c("geo","TIME_PERIOD"))
+panelA = panelA |> select(geo,c_birth,TIME_PERIOD,Mean_income_FOR,Mean_income_NAT,Immigration_num,Highedu_ratio,Pop_num) |>
+          mutate(Imigration_ratio=Immigration_num/Pop_num)
+panelA
+```
+
+
+
+
+## Panel B
+
+Panel B is designed for the second research question, consist of 5 tables.
+
+Similar to panel A, `geo` indicates European country/region. `c_birth` is also similar.
+
+Column `Income_FOR` is the variable of foreigners' income, `Income_Dom` is natives' income. We introduce the latter to control the effect of targeted countries economic prosperity.
+
+In this panel we adopt more detailed divisions by education level.
+
+`ED0-2`, `ED3-4`,`ED5-8` are indicators of education level, `ED0-2` represents relatively low education level,(e.g.elementary school), `ED3-4` represents intermediate level(e.g. High school degree),`ED5-8` represents relatively high education level(university degree or equivalent).
+
+`Income_Dom` is the newly introduced control variable, our study can filter partly eliminate the simultaneity problem in regression.
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
+
+```{r}
+F = ilc_di16 |> filter(geo%in%countries,unit=='PPS',age=='Y18-64',
+                       indic_il=='MEI_E',sex!='T')|>
+    mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
+      c_birth %in% birth_neu ~ "NEU_FOR",TRUE ~ c_birth ))|>
+    filter(c_birth%in%c('EU_FOR','NEU_FOR')) |>
+    mutate(Income_FOR=values) |>
+    select(sex,geo,c_birth,TIME_PERIOD,Income_FOR)
+
+G = edat_lfs_9912|>filter(age=="Y18-64",geo%in%countries,) |>
+    filter(isced11%in%c("ED0-2","ED3_4","ED5-8")) |>
+    mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
+      c_birth %in% birth_neu ~ "NEU_FOR",TRUE ~ c_birth ))|>
+    filter(c_birth%in%c('EU_FOR','NEU_FOR')) |> 
+    pivot_wider(names_from = isced11, values_from = values) |>
+    select(sex,c_birth,geo,TIME_PERIOD,`ED0-2`,`ED3_4`,`ED5-8`)
+
+H = ilc_di03 |> filter(geo%in%countries,unit=='PPS',age=='Y18-64',
+        indic_il=='MEI_E',sex!='T') |>
+    mutate(Income_Dom=values) |>
+    select(sex,geo,TIME_PERIOD,Income_Dom)
+
+I = migr_imm8 |> filter(sex!="T",agedef=='COMPLET') |> 
+  filter(age%in%paste0("Y", 18:64),geo%in%countries) |>
+  summarise(Immigration_num=sum(values),.by=c("geo","sex","TIME_PERIOD"))
+
+J = demo_pjangroup |> filter(sex=='T',geo%in%countries,) |>
+  filter(age%in%c("Y15-19","Y20-24","Y25-29","Y30-34","Y35-39",
+                  "Y40-44","Y45-49","Y50-54","Y55-59","Y60-64")) |>
+  summarise(Pop_num=sum(values),.by=c("geo","TIME_PERIOD"))
+
+panelB = F |> inner_join(G, by = c("sex","c_birth","geo","TIME_PERIOD")) |>
+              inner_join(H, by = c("sex","geo","TIME_PERIOD")) |>
+              inner_join(I, by = c("geo","sex","TIME_PERIOD")) |>
+              inner_join(J, by = c("geo","TIME_PERIOD"))|> 
+        mutate(Imigration_ratio=Immigration_num/Pop_num)
+panelB
+```
+
+# Data Analysis
+
+Since we're dealing with panel data, longitudinal impact shouldn't be ignored. Thus we first use mutate() function to compute the lag terms of some variables, then use ggplot for basic data visualizations.
+
+## PanelA
+
+```{r}
+panelA$income_ratio <- (panelA$Mean_income_FOR/panelA$Mean_income_NAT)*100
+panelA$Immigration_percentage <- panelA$Imigration_ratio*100
+
+
+panelA_reg <- panelA |> group_by(geo,c_birth)|>
+  mutate(income_NAT_lag1 = dplyr::lag(Mean_income_NAT,n = 1))|>
+  mutate(Immigration_percentage_lag1 = dplyr::lag(Immigration_percentage,n = 1))|>
+  mutate(income_NAT_lag2 = dplyr::lag(Mean_income_NAT, n = 2))|>
+  mutate(Immigration_percentage_lag2 = dplyr::lag(Immigration_percentage,n = 2))|>
+  ungroup()|>
+  mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~1,c_birth=='EU_FOR'~0))|>
+  drop_na()
+
+panelA_reg |> filter(geo %in% c("AT","BE","CH"))|>
+  ggplot(aes(y = Mean_income_NAT, x = TIME_PERIOD)) +
+  geom_bar(stat = "identity") + 
+  facet_wrap(~ geo + c_birth) +
+  theme_minimal()  # Optional, for cleaner visualization
+```
+
+```{r}
+panelA_reg |> ggplot(aes(income_ratio))+geom_density()
+```
+Two graphs above signify two facts: 
+
+1) Mean native citizens' income is constantly increasing over time(except some outliers caused possibly by pandemics)
+2) Immigrants' income is relatively low to native's income
+
+## PanelB
+
+Panel B is designed for the second research question, consist of 5 tables.
+
+Similar to panel A, `geo` indicates European country/region. `c_birth` is also similar.
+
+Column `Income_FOR` is the variable of foreigners' income, `Income_Dom` is natives' income. We introduce the latter to control the effect of targeted countries economic prosperity.
+
+In this panel we adopt more detailed divisions by education level.
+
+`ED0-2`, `ED3-4`,`ED5-8` are indicators of education level, `ED0-2` represents relatively low education level,(e.g.elementary school), `ED3-4` represents intermediate level(e.g. High school degree),`ED5-8` represents relatively high education level(university degree or equivalent).
+
+`Income_Dom` is the newly introduced control variable, our study can filter partly eliminate the simultaneity problem in regression.
+
+`immigration_ratio` is calculated by `Immigration_num` and `Pop_num`.
+
+To account for differences in income levels across countries, we adopt a relative measurement defined as the ratio of immigrant income `Income_FOR` to native income `Income_Dom`, referred to as `Income_Rev`.
+
+For the educational aspect, since the sum of `ED0-2`, `ED3_4` and `ED5-8` always equals 1, we exclude one category to avoid multicollinearity and use the remaining two as independent variables.
+
+For the sex variable, we create a dummy variable, denoted as `sex_onehot`, where 1 indicates male and 0 indicates female.
+
+Similarly, for the `c_birth` variable, we define a dummy variable, where 1 represents EU-born immigrants (EU_FOR) and 0 represents non-EU-born immigrants
+
+To ensure consistent data scaling, the `immigration_ratio` is multiplied by 100 and redefined as `Imm_ratio`.
+
+Finally, to account for potential time effects or trends, we include lagged variables for both `Income_Rev` and `Imm_ratio`.
+
+Overall, we exclude rows with null values from the dataset.
+
+
+```{r}
+panelB |> mutate(Income_Rev=Income_FOR/Income_Dom) |>
+  mutate(Income_Rev_lag1=lag(Income_Rev,1),.by=c("geo","sex","c_birth"))
+```
+
+
+```{r}
+# panelB 
+panelB_reg = panelB |> mutate(Income_Rev=(Income_FOR/Income_Dom),
+                              Imm_ratio=Imigration_ratio*100) |> 
+  mutate(Income_Rev_lag1=dplyr::lag(Income_Rev, 1), 
+         Imm_ratio_lag1=dplyr::lag(Imm_ratio,1),.by=c("geo","sex","c_birth")) |>
+  mutate(Income_Rev_lag2=dplyr::lag(Income_Rev, 2), 
+         Imm_ratio_lag2=dplyr::lag(Imm_ratio,2),.by=c("geo","sex","c_birth")) |>
+  filter(!is.na(Income_Rev_lag2),!is.na(Income_Rev_lag1),!is.na(Income_Rev),
+         !is.na(Imm_ratio),!is.na(Imm_ratio_lag1),!is.na(Imm_ratio_lag2),
+         !is.na(`ED5-8`),!is.na(ED3_4)) |>
+  mutate(`ED0-2`=100-`ED5-8`-ED3_4) |>
+  mutate(`ED0-2`=`ED0-2`/100,`ED5-8`=`ED5-8`/100)|>
+  mutate(sex_onehot=case_when(sex=='F'~0,sex=='M'~1)) |>
+  mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~0,c_birth=='EU_FOR'~1)) |>
+  mutate(sex_birth_onehot=sex_onehot*c_birth_onehot) |>
+  select(Income_Rev,Income_Rev_lag1,Income_Rev_lag2,sex_onehot,c_birth_onehot,
+         sex_birth_onehot,`ED0-2`,`ED5-8`,Imm_ratio,Imm_ratio_lag1,Imm_ratio_lag2)
+```
+
+We have a look at our regression panel.
+`panelB_reg` has `r NROW(panelB_reg)` rows and `r NCOL(panelB_reg)` columns.
+
+We display the distribution of Income_Rev. We can see that `Income_Rev` vary from 0.5 to 2. In some groups, the relative level of income is only half compared to native income, while some reaching 1.8.
+```{r}
+panelB_reg |> ggplot(aes(Income_Rev))+geom_density()
+```
+
+# Model Fitting
+
+## Question 1
+
+To address question 1, we first need to investigate the effect of immigration on native citizens' income level. The first hypothesis is thus is:
+
+- Hypothesis 1: Immigrants concentration is correlated to the average income of native citizens.
+
+```{r}
+model_with_lags <- plm(Mean_income_NAT ~ Immigration_percentage+Immigration_percentage_lag1+Immigration_percentage_lag2+income_NAT_lag1+income_NAT_lag2,data = panelA_reg, index = c("geo", "TIME_PERIOD"), model = "random")
+summary(model_with_lags)
+```
+From the regression report we can learn that the ratio of immigrants to native population has a significant positive correlation to average native income. Every 1% increase of immigration over total population will add about 1000 euros to the average native income. 
+
+But we still don't know whether the immigration clustering boost the economic growth of targeted countries or it is the reverse. To investigate the causality, we need further analysis.
+
+We replace the dependent variable by income_ratio, which is computed as immigrants' income over native citizens' income.
+
+```{r}
+
+panelA$income_ratio <- (panelA$Mean_income_FOR/panelA$Mean_income_NAT)*100
+panelA$Immigration_percentage <- panelA$Imigration_ratio*100
+
+
+panelA_reg <- panelA |> group_by(geo,c_birth)|>
+  mutate(income_ratio_lag1 = dplyr::lag(income_ratio,n = 1))|>
+  mutate(Immigration_percentage_lag1 = dplyr::lag(Immigration_percentage,n = 1))|>
+  mutate(income_ratio_lag2 = dplyr::lag(income_ratio, n = 2))|>
+  mutate(Immigration_percentage_lag2 = dplyr::lag(Immigration_percentage,n = 2))|>
+  ungroup()|>
+  mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~0,c_birth=='EU_FOR'~1))
+
+model_with_lags <- plm(income_ratio ~ Immigration_percentage+Immigration_percentage_lag1+Immigration_percentage_lag2+income_ratio_lag1+income_ratio_lag2,data = panelA_reg, index = c("geo", "TIME_PERIOD"), model = "random")
+summary(model_with_lags)
+```
+The result shows that immigration clustering is negatively correlated to the income_ratio with one period lag. This correlation is significant at 10% confidence level, but not 5%. Then it is possibly not immigration has an impact on targeted countries' economy but the reverse. 
+
+To justify our hypothesis, we implement a Difference-in-Difference regression. We choose the country of birth of immigrants as treatment variable. Since immigrants during refugee crisis mainly come from non-eu countries. EU foreigners are taken as control group. We choose 2015(the zenith of refugee crisis) as the dividing time point.
+
+```{r}
+
+panelA_DID <- panelA |> group_by(geo,c_birth)|>
+  mutate(income_ratio_lag1 = dplyr::lag(income_ratio,n = 1))|>
+  mutate(Immigration_percentage_lag1 = dplyr::lag(Immigration_percentage,n = 1))|>
+  mutate(income_ratio_lag2 = dplyr::lag(income_ratio, n = 2))|>
+  mutate(Immigration_percentage_lag2 = dplyr::lag(Immigration_percentage,n = 2))|>
+  ungroup()|>
+  mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~1,c_birth=='EU_FOR'~0))|>
+  mutate(post = case_when(TIME_PERIOD < 2015 ~0,TIME_PERIOD >2014~1))|>
+  mutate(post_treatment = post*c_birth_onehot)
+
+model_with_interactions <- plm(
+  income_ratio ~ Immigration_percentage +
+                 Immigration_percentage_lag1 +
+                 Immigration_percentage_lag2 +
+                 income_ratio_lag1 +
+                 income_ratio_lag2 + 
+                 c_birth_onehot + 
+                 post +
+                 post_treatment,
+  data = panelA_DID,
+  index = c("geo", "TIME_PERIOD"),
+  model = "random"
+)
+
+summary(model_with_interactions)
+
+```
+The interaction term shows a negative impact of non-eu immigrants on income_ratio of immigrants to native citizens. This implies that after 2015, immigrants came to Europe because they're attracted by the safety,stability and better life quality in Europe. These coming immigrants don't bring immediate economic benefits to Europe but somehow drag the European economy. However in long-run the economy might take advantage of the increase of labour supply, but this potential positive impact is not significant.
+
+Thus we can conclude it's economic prosperity influences immigration, but not the reverse.
+
+
+
+## Question 2
+
+
+We propose some hypothesis before we run the regression.
+
+- Hypothesis 1: The relative income level is not influenced by gender.
+
+- Hypothesis 2: The relative income level does not vary based on the country of birth of immigrants (EU vs. Non-EU).
+
+- Hypothesis 3: The relative income level is not affected by education.
+
+- Hypothesis 4: The relative income level is not influenced by clustering effects (e.g., higher immigration leading to increased competition and lower income).
+
+We run our regression as below and display the basic summary result.
+```{r}
+modelB <- lm(Income_Rev~Income_Rev_lag1+Income_Rev_lag2+
+               sex_onehot+c_birth_onehot+sex_birth_onehot+
+               `ED0-2`+`ED5-8`+Imm_ratio+Imm_ratio_lag1+Imm_ratio_lag2,panelB_reg)
+summary(modelB)
+```
+
+From the regression table, we observe the following:
+1. The relative income level exhibits strong autocorrelation.
+2. Gender does not have a significant effect on the relative income level; therefore, we cannot reject Hypothesis 1.
+3. The country of birth is significantly and positively correlated with the relative income level, indicating that immigrants born in EU countries have higher relative incomes than those from non-EU countries. Hence, we reject Hypothesis 2.
+4. A higher fraction of immigrants within a group receiving low education is strongly negatively correlated with the relative income level. This demonstrates that education significantly impacts income, leading us to reject Hypothesis 3.
+5. The immigration ratio has a significantly negative effect on relative income, meaning we can reject Hypothesis 4.
+
+Based on this result, we have some suggestions.
+
+- Since gender does not significantly affect relative income levels, this suggests that EU countries have made substantial progress in addressing gender inequality.
+
+- The positive correlation between EU-born immigrants and higher relative income levels indicates a potential disparity in economic opportunities between immigrants from EU and non-EU countries. Policies should focus on improving integration and access to opportunities for non-EU immigrants by offering tailored language training, skill development programs, and mentoring initiatives.
+
+- The significant negative correlation between low education levels and relative income indicates that individuals with low education earn well below the native average and are more likely to experience poverty. Policymakers should pay more attention to this group by providing greater access to educational opportunities. 
+
+- The insignificant but slightly negative effect of immigration ratios suggests that when immigrants are concentrated in one country, competition among them increases, potentially lowering their income. This implies that policymakers should carefully regulate the influx of immigrants, particularly illegal ones.
+
+# Conclusions
+
+We've been made conclusions for each research question. However, something more emerges once we take a comprehensive perspective. 
+
+1. Immigrants are attracted by the safety and stability of living in Europe, as well as more opportunities to gain higher income. 
+
+2. Immigrants cannot fully benefit from sharing the growth of European economy. As the economy grows, they drag it slightly, but more obviously new immmigrants after European refugee crisis  squeeze out other immigrants' welfare, that make the whole groups worse-off.
+
+3. Education has a strong positive effect on immigrants' income, especially basic education(EDU0-2) Thus targeted countries of immigration can help immigrants to better integrate into the local societies, by providing basic education services.
+
+4. Large scale of immigrants influx in a short period of time might impact negatively on domestic economy. While this harm alleviates over time. Thus European countries are capable of incorporate non-eu immigrants in the long run, as long as they do it in a steady pace.
+
