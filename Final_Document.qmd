@@ -1,5 +1,5 @@
 ---
-title: "Final Document"
+title: "The Effect of Immigration on the Economy of Targeted Countries and their own Income"
 format: 
   wordcount-pdf: default
 ---
@@ -192,19 +192,39 @@ panelA_reg <- panelA |> group_by(geo,c_birth)|>
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 
 panelA_reg |> filter(geo %in% c("AT","BE","CH"))|>
-  ggplot(aes(y = Mean_income_NAT, x = TIME_PERIOD)) +
+  ggplot(aes(y = Mean_income_NAT, x = TIME_PERIOD,fill = geo)) +
   geom_bar(stat = "identity") + 
   facet_wrap(~ geo + c_birth) +
   theme_minimal()  # Optional, for cleaner visualization
 ```
 
+
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 panelA_reg |> ggplot(aes(income_ratio))+geom_density()
 ```
+
 Two graphs above signify two facts: 
 
 1) Mean native citizens' income is constantly increasing over time(except some outliers caused possibly by pandemics)
 2) Immigrants' income is relatively low to native's income
+
+We also found the auto-correlation between average native income and its lag.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+
+panelA_reg |> 
+  ggplot(aes(y = Mean_income_NAT, x = income_NAT_lag1)) +
+  geom_point(alpha = 0.6, color = "blue") +  
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  
+  labs(
+    title = "Scatter Plot of Average Native Income vs. Lagged Average Native Income",
+    x = "Lagged Income (income_NAT_lag1)",
+    y = "Income Ratio"
+  ) +
+  theme_minimal()
+
+```
+
 
 ## PanelB
 
@@ -270,6 +290,25 @@ We display the distribution of Income_Rev. We can see that `Income_Rev` vary fro
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 panelB_reg |> ggplot(aes(Income_Rev))+geom_density()
 ```
+
+Similar to panelA, we graphically show the auto-correlation of relative income of immigrants and its lag.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+
+panelB_reg |> 
+  ggplot(aes(y = Income_Rev, x = Income_Rev_lag1)) +
+  geom_point(alpha = 0.6, color = "blue") +  
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  
+  labs(
+    title = "Scatter Plot of Relative Income vs. Lagged Relative Income",
+    x = "Lagged Relative Income (Income_Rev_lag1)",
+    y = "Relative Income"
+  ) +
+  theme_minimal()
+
+```
+
+
 
 # Model Fitting
 
