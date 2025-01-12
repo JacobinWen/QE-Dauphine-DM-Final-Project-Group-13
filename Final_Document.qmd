@@ -1,12 +1,9 @@
 ---
 title: "Final Document"
-format: pdf
+format: 
+  wordcount-pdf: default
 ---
-
-# Environment and data reading
-
-## Prepare environment
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 library(here)
 library(vroom)
 library(tidyr)
@@ -16,8 +13,7 @@ library(ggplot2)
 library(plm)
 ```
 
-## Read Dataset
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 urb_cpopcb <- suppressMessages(get_eurostat('urb_cpopcb', time_format = "num", stringsAsFactors = TRUE))
 ilc_di16 <- suppressMessages(get_eurostat('ilc_di16', time_format = "num", stringAsFactors = TRUE))
 ilc_iw16 <- suppressMessages(get_eurostat('ilc_iw16', time_format = "num", stringAsFactors = TRUE))
@@ -32,7 +28,7 @@ demo_pjangroup <- suppressMessages(get_eurostat('demo_pjangroup', time_format = 
 ilc_di03 <- suppressMessages(get_eurostat('ilc_di03', time_format = "num", stringAsFactors = TRUE))
 ```
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 countries = c("BE","BG","CZ","DK","DE","EE","IE","EL","ES","FR","IT","CY","LV","LT","LU","HU","MT","NL","AT","PL","PT","RO","SI","SK","FI","SE","NO","CH","UK")
 birth_eu = c("EU28_FOR","EU27_2007_FOR","EU27_2020_FOR")
 birth_neu = c("NEU27_2007_FOR","NEU27_2020_FOR","NEU28_FOR")
@@ -80,7 +76,7 @@ Panel A is designed for the first research question, consist of four 4 table
 
 `immigration_ratio` is calculated by `Immigration_num` and `Pop_num`.
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 
 A = ilc_di16 |> filter((sex=='T')&(age=='Y_GE18')&(c_birth%in%birth_neu | c_birth%in%birth_eu)&
     (indic_il=='MEI_E')&(unit=='PPS')&(geo%in%countries)) |> mutate(Mean_income_FOR=values) |>
@@ -133,7 +129,7 @@ In this panel we adopt more detailed divisions by education level.
 
 `immigration_ratio` is calculated by `Immigration_num` and `Pop_num`. 
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 F = ilc_di16 |> filter(geo%in%countries,unit=='PPS',age=='Y18-64',
                        indic_il=='MEI_E',sex!='T')|>
     mutate(c_birth=case_when(c_birth %in% birth_eu ~ "EU_FOR",
@@ -178,7 +174,7 @@ Since we're dealing with panel data, longitudinal impact shouldn't be ignored. T
 
 ## PanelA
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 panelA$income_ratio <- (panelA$Mean_income_FOR/panelA$Mean_income_NAT)*100
 panelA$Immigration_percentage <- panelA$Imigration_ratio*100
 
@@ -191,6 +187,9 @@ panelA_reg <- panelA |> group_by(geo,c_birth)|>
   ungroup()|>
   mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~1,c_birth=='EU_FOR'~0))|>
   drop_na()
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 
 panelA_reg |> filter(geo %in% c("AT","BE","CH"))|>
   ggplot(aes(y = Mean_income_NAT, x = TIME_PERIOD)) +
@@ -199,7 +198,7 @@ panelA_reg |> filter(geo %in% c("AT","BE","CH"))|>
   theme_minimal()  # Optional, for cleaner visualization
 ```
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 panelA_reg |> ggplot(aes(income_ratio))+geom_density()
 ```
 Two graphs above signify two facts: 
@@ -238,13 +237,13 @@ Finally, to account for potential time effects or trends, we include lagged vari
 Overall, we exclude rows with null values from the dataset.
 
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 panelB |> mutate(Income_Rev=Income_FOR/Income_Dom) |>
   mutate(Income_Rev_lag1=lag(Income_Rev,1),.by=c("geo","sex","c_birth"))
 ```
 
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 # panelB 
 panelB_reg = panelB |> mutate(Income_Rev=(Income_FOR/Income_Dom),
                               Imm_ratio=Imigration_ratio*100) |> 
@@ -268,7 +267,7 @@ We have a look at our regression panel.
 `panelB_reg` has `r NROW(panelB_reg)` rows and `r NCOL(panelB_reg)` columns.
 
 We display the distribution of Income_Rev. We can see that `Income_Rev` vary from 0.5 to 2. In some groups, the relative level of income is only half compared to native income, while some reaching 1.8.
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 panelB_reg |> ggplot(aes(Income_Rev))+geom_density()
 ```
 
@@ -280,17 +279,23 @@ To address question 1, we first need to investigate the effect of immigration on
 
 - Hypothesis 1: Immigrants concentration is correlated to the average income of native citizens.
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 model_with_lags <- plm(Mean_income_NAT ~ Immigration_percentage+Immigration_percentage_lag1+Immigration_percentage_lag2+income_NAT_lag1+income_NAT_lag2,data = panelA_reg, index = c("geo", "TIME_PERIOD"), model = "random")
-summary(model_with_lags)
+
 ```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+summary(model_with_lags)
+
+```
+
 From the regression report we can learn that the ratio of immigrants to native population has a significant positive correlation to average native income. Every 1% increase of immigration over total population will add about 1000 euros to the average native income. 
 
 But we still don't know whether the immigration clustering boost the economic growth of targeted countries or it is the reverse. To investigate the causality, we need further analysis.
 
 We replace the dependent variable by income_ratio, which is computed as immigrants' income over native citizens' income.
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 
 panelA$income_ratio <- (panelA$Mean_income_FOR/panelA$Mean_income_NAT)*100
 panelA$Immigration_percentage <- panelA$Imigration_ratio*100
@@ -305,13 +310,17 @@ panelA_reg <- panelA |> group_by(geo,c_birth)|>
   mutate(c_birth_onehot=case_when(c_birth=='NEU_FOR'~0,c_birth=='EU_FOR'~1))
 
 model_with_lags <- plm(income_ratio ~ Immigration_percentage+Immigration_percentage_lag1+Immigration_percentage_lag2+income_ratio_lag1+income_ratio_lag2,data = panelA_reg, index = c("geo", "TIME_PERIOD"), model = "random")
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 summary(model_with_lags)
 ```
 The result shows that immigration clustering is negatively correlated to the income_ratio with one period lag. This correlation is significant at 10% confidence level, but not 5%. Then it is possibly not immigration has an impact on targeted countries' economy but the reverse. 
 
 To justify our hypothesis, we implement a Difference-in-Difference regression. We choose the country of birth of immigrants as treatment variable. Since immigrants during refugee crisis mainly come from non-eu countries. EU foreigners are taken as control group. We choose 2015(the zenith of refugee crisis) as the dividing time point.
 
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 
 panelA_DID <- panelA |> group_by(geo,c_birth)|>
   mutate(income_ratio_lag1 = dplyr::lag(income_ratio,n = 1))|>
@@ -336,6 +345,9 @@ model_with_interactions <- plm(
   index = c("geo", "TIME_PERIOD"),
   model = "random"
 )
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 
 summary(model_with_interactions)
 
@@ -360,10 +372,14 @@ We propose some hypothesis before we run the regression.
 - Hypothesis 4: The relative income level is not influenced by clustering effects (e.g., higher immigration leading to increased competition and lower income).
 
 We run our regression as below and display the basic summary result.
-```{r}
+```{r, include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 modelB <- lm(Income_Rev~Income_Rev_lag1+Income_Rev_lag2+
                sex_onehot+c_birth_onehot+sex_birth_onehot+
                `ED0-2`+`ED5-8`+Imm_ratio+Imm_ratio_lag1+Imm_ratio_lag2,panelB_reg)
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 summary(modelB)
 ```
 
@@ -386,7 +402,7 @@ Based on this result, we have some suggestions.
 
 # Conclusions
 
-We've been made conclusions for each research question. However, something more emerges once we take a comprehensive perspective. 
+We've been made conclusions for each research question. However, something more emerges once we take a comprehensive perspective. Four further conclusions are made.
 
 1. Immigrants are attracted by the safety and stability of living in Europe, as well as more opportunities to gain higher income. 
 

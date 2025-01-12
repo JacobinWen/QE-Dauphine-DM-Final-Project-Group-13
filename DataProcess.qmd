@@ -698,10 +698,10 @@ panelB |> mutate(Income_Rev=Income_FOR/Income_Dom) |>
 # panelB 
 panelB_reg = panelB |> mutate(Income_Rev=(Income_FOR/Income_Dom),
                               Imm_ratio=Imigration_ratio*100) |> 
-  mutate(Income_Rev_lag1=lag(Income_Rev, 1), 
-         Imm_ratio_lag1=lag(Imm_ratio,1),.by=c("geo","sex","c_birth")) |>
-  mutate(Income_Rev_lag2=lag(Income_Rev, 2), 
-         Imm_ratio_lag2=lag(Imm_ratio,2),.by=c("geo","sex","c_birth")) |>
+  mutate(Income_Rev_lag1=dplyr::lag(Income_Rev, 1), 
+         Imm_ratio_lag1=dplyr::lag(Imm_ratio,1),.by=c("geo","sex","c_birth")) |>
+  mutate(Income_Rev_lag2=dplyr::lag(Income_Rev, 2), 
+         Imm_ratio_lag2=dplyr::lag(Imm_ratio,2),.by=c("geo","sex","c_birth")) |>
   filter(!is.na(Income_Rev_lag2),!is.na(Income_Rev_lag1),!is.na(Income_Rev),
          !is.na(Imm_ratio),!is.na(Imm_ratio_lag1),!is.na(Imm_ratio_lag2),
          !is.na(`ED5-8`),!is.na(ED3_4)) |>
